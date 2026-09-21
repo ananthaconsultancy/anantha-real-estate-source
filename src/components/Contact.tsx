@@ -107,7 +107,7 @@ const Contact = () => {
     {
       icon: Phone,
       title: "Call Us",
-      content: "+91 93916 75372, +91 6302966604",
+      content: "+91 63029 66604",
     },
     {
       icon: Mail,
@@ -245,7 +245,7 @@ const Contact = () => {
                       aria-invalid={phoneError ? "true" : "false"}
                       aria-describedby={phoneError ? "phone-error" : undefined}
                       className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all font-body"
-                      placeholder="+91 93916 75372"
+                      placeholder="+91 63029 66604"
                   />
                     {phoneError && (
                       <p id="phone-error" className="mt-2 text-sm text-red-500">{phoneError}</p>
