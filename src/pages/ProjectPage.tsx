@@ -62,10 +62,7 @@ const ProjectPage = () => {
 
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4">
-            <div className="aspect-[16/7] md:aspect-[16/6] rounded-3xl bg-gradient-to-br from-[#eef4ff] to-[#e9e8ff] flex items-center justify-center overflow-hidden relative shadow-sm border border-border">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(94,177,227,0.26),transparent_28%)]" />
-              <Building2 className="w-24 h-24 text-brand-purple/30 relative z-10" aria-hidden="true" />
-            </div>
+            {project.slug === "motherland-green-meadows" ? <div className="space-y-5"><div className="relative aspect-[16/8] rounded-3xl overflow-hidden"><img src="/projects/motherland/green-meadows/aerial-01.jpg" alt="Green Meadows aerial view" className="w-full h-full object-cover"/><div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"/><h2 className="absolute bottom-7 left-7 text-white font-display text-3xl md:text-5xl font-bold">Green Meadows · Brahmadevam</h2></div><div className="grid grid-cols-2 md:grid-cols-3 gap-4">{["aerial-02.jpg","aerial-03.jpg","development.jpg"].map((file,i)=><img key={file} src={`/projects/motherland/green-meadows/${file}`} alt={`Green Meadows project view ${i+2}`} loading="lazy" className="w-full h-52 md:h-64 object-cover rounded-2xl"/>)}</div><div className="pt-5"><p className="text-xs uppercase tracking-[0.22em] font-bold text-[#6044b8] mb-3">Project Video</p><video controls playsInline preload="metadata" poster="/projects/motherland/green-meadows/aerial-01.jpg" className="w-full rounded-3xl bg-black"><source src="/projects/motherland/green-meadows/project-video.mp4" type="video/mp4"/></video></div></div> : <div className="aspect-[16/7] md:aspect-[16/6] rounded-3xl bg-gradient-to-br from-[#eef4ff] to-[#e9e8ff] flex items-center justify-center overflow-hidden relative shadow-sm border border-border"><Building2 className="w-24 h-24 text-brand-purple/30" aria-hidden="true"/></div>}
           </div>
         </section>
 
