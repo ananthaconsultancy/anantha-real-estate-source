@@ -48,7 +48,7 @@ export const projects: Project[] = [
     seoTitle: "Central World Nellore | Premium Township | Anantha Real Estate",
     seoDescription:
       "Explore Central World, a premium township project in Kanaparthi Padu, Nellore, marketed by Anantha Real Estate.",
-    phone: "+91 93916 75372",
+    phone: "+91 63029 66604",
   },
   {
     slug: "motherland-green-meadows",
@@ -76,7 +76,7 @@ export const projects: Project[] = [
     seoTitle: "Motherland Green Meadows Brahmadevam | Residential Plots | Anantha Real Estate",
     seoDescription:
       "Explore Motherland Green Meadows, a NUDA-approved residential plotted development at Brahmadevam, Muthukur Mandal, Nellore. Enquire with Anantha Real Estate for project details and site visits.",
-    phone: "+91 93916 75372",
+    phone: "+91 63029 66604",
   },
   {
     slug: "motherland-crkr-sunrise-city",
@@ -106,7 +106,7 @@ export const projects: Project[] = [
     seoTitle: "Motherland CRKR Sunrise City Atmakur | Residential Plots | Anantha Real Estate",
     seoDescription:
       "Explore Motherland CRKR Sunrise City at Atmakur, Nellore District, with highway connectivity and planned lifestyle amenities. Enquire with Anantha Real Estate for project details and site visits.",
-    phone: "+91 93916 75372",
+    phone: "+91 63029 66604",
   },
 ];
 
