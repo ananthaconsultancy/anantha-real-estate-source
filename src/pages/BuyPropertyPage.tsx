@@ -13,7 +13,7 @@ const BuyPropertyPage = () => {
     event.preventDefault();
     trackEvent("buyer_requirement_submit", { property_type: form.type, preferred_location: form.location, budget: form.budget });
     const message = `Hi Anantha Real Estate, I am looking to buy a property.\nName: ${form.name}\nPhone: ${form.phone}\nProperty type: ${form.type}\nPreferred location: ${form.location || "Open"}\nBudget: ${form.budget || "Not specified"}\nRequirement: ${form.notes || "Please suggest suitable options."}`;
-    window.open(`https://wa.me/919391675372?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+    window.open(`https://wa.me/916302966604?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
   };
 
   return (
