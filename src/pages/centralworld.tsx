@@ -38,7 +38,7 @@ export default function CentralWorld() {
                   <Button variant="brand" size="lg" asChild><a href="https://calendly.com/jvk-aconsultancy/30min" target="_blank" rel="noopener noreferrer">Book Site Visit <ArrowRight size={18} /></a></Button>
                   <Button variant="outline" size="lg" asChild><a href="https://wa.me/916302966604" target="_blank" rel="noopener noreferrer"><MessageCircle size={18} /> WhatsApp</a></Button>
                 </div>
-                <a href="tel:+919391675372" className="inline-flex items-center gap-2 mt-7 text-brand-purple font-semibold"><Phone size={17} /> +91 93916 75372</a>
+                <a href="tel:+916302966604" className="inline-flex items-center gap-2 mt-7 text-brand-purple font-semibold"><Phone size={17} /> +91 63029 66604</a>
               </div>
             </div>
             <div className="relative min-h-[420px] lg:min-h-full">
@@ -89,7 +89,7 @@ export default function CentralWorld() {
         <section className="py-16 md:py-20 bg-gradient-to-r from-brand-dark via-brand-purple to-accent text-white">
           <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
             <div className="max-w-3xl"><p className="text-xs uppercase tracking-[0.2em] font-bold text-white/70">Central World Enquiry</p><h2 className="font-display text-3xl md:text-5xl font-bold mt-3">Plan your Central World site visit.</h2><p className="mt-4 text-white/75 text-lg">Speak with Anantha Real Estate to confirm current plot availability and project information.</p></div>
-            <div className="flex flex-wrap gap-3"><Button size="lg" className="bg-white text-brand-dark hover:bg-white/90" asChild><a href="https://calendly.com/jvk-aconsultancy/30min" target="_blank" rel="noopener noreferrer">Book Site Visit <ArrowRight size={18} /></a></Button><Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10" asChild><a href="tel:+919391675372"><Phone size={18} /> Call Now</a></Button></div>
+            <div className="flex flex-wrap gap-3"><Button size="lg" className="bg-white text-brand-dark hover:bg-white/90" asChild><a href="https://calendly.com/jvk-aconsultancy/30min" target="_blank" rel="noopener noreferrer">Book Site Visit <ArrowRight size={18} /></a></Button><Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10" asChild><a href="tel:+916302966604"><Phone size={18} /> Call Now</a></Button></div>
           </div>
         </section>
       </main>
