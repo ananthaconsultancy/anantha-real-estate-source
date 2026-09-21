@@ -13,6 +13,7 @@ const ProjectPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const project = slug ? getProjectBySlug(slug) : undefined;
   const inventory = slug ? getPropertiesByProject(slug).filter((property) => property.status !== "unavailable") : [];
+  const isMotherlandProject = project?.partnerSlug === "motherland-developers";
 
   if (!project) {
     return (
@@ -68,12 +69,24 @@ const ProjectPage = () => {
           </div>
         </section>
 
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="flex items-end justify-between gap-4 mb-8"><div><p className="text-xs uppercase tracking-[0.2em] font-bold text-accent">Customer Inventory</p><h2 className="font-display text-3xl md:text-4xl font-bold mt-2">Available in this project</h2></div><span className="text-sm text-muted-foreground">{inventory.length} listing{inventory.length === 1 ? "" : "s"}</span></div>
-            {inventory.length > 0 ? <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">{inventory.map((property) => <PropertyListingCard key={property.slug} property={property} />)}</div> : <div className="rounded-2xl border border-border bg-[#f7f9ff] p-8"><p className="text-muted-foreground">Customer inventory will appear here once individual properties are approved for public listing. Contact us for current availability.</p></div>}
-          </div>
-        </section>
+        {!isMotherlandProject && (
+          <section className="py-16 bg-white">
+            <div className="container mx-auto px-4">
+              <div className="flex items-end justify-between gap-4 mb-8"><div><p className="text-xs uppercase tracking-[0.2em] font-bold text-accent">Customer Inventory</p><h2 className="font-display text-3xl md:text-4xl font-bold mt-2">Available in this project</h2></div><span className="text-sm text-muted-foreground">{inventory.length} listing{inventory.length === 1 ? "" : "s"}</span></div>
+              {inventory.length > 0 ? <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">{inventory.map((property) => <PropertyListingCard key={property.slug} property={property} />)}</div> : <div className="rounded-2xl border border-border bg-[#f7f9ff] p-8"><p className="text-muted-foreground">Customer inventory will appear here once individual properties are approved for public listing. Contact us for current availability.</p></div>}
+            </div>
+          </section>
+        )}
+
+        {isMotherlandProject && (
+          <section className="py-14 bg-white border-t border-border">
+            <div className="container mx-auto px-4 max-w-4xl text-center">
+              <p className="text-xs uppercase tracking-[0.2em] font-bold text-accent mb-3">Project Enquiries</p>
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Speak with Anantha Real Estate</h2>
+              <p className="text-muted-foreground leading-relaxed">For current plot availability, commercial information, project documents and site visits, contact our team. Live inventory and internal price sheets are not published on this website.</p>
+            </div>
+          </section>
+        )}
 
         <PremiumCTA title={`Interested in ${project.name}?`} description="Speak with our team to reconfirm current project information, availability and the next step." href="/contact" label="Enquire About This Project" />
       </main>
