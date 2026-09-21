@@ -54,7 +54,6 @@ const Footer = () => {
             <a href="https://share.google/87CxiXWo8OARA9nx8" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-brand-purple leading-relaxed block">Sathyanarayanapuram Center, Mypadu Road,<br />Nellore, Andhra Pradesh 524002 <ArrowUpRight size={13} className="inline" /></a>
             <div className="mt-5 grid gap-2 text-sm text-muted-foreground">
               <a href="tel:+916302966604" className="hover:text-brand-purple">+91 63029 66604</a>
-              <a href="tel:+919391675372" className="hover:text-brand-purple">+91 93916 75372</a>
               <a href="mailto:jvk.aconsultancy@gmail.com" className="hover:text-brand-purple">jvk.aconsultancy@gmail.com</a>
             </div>
           </div>
