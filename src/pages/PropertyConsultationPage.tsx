@@ -24,7 +24,7 @@ const PropertyConsultationPage = () => {
     trackEvent("lead_submit", { form_name: "property_consultation", requirement: form.requirement, property_type: form.propertyType, purchase_timeline: form.timeline, destination: "whatsapp" });
     const campaign = [attribution.utm_source, attribution.utm_campaign].filter(Boolean).join(" / ");
     const message = ["Hi Anantha Real Estate, I would like a property consultation.", `Name: ${form.name}`, `Phone: ${form.phone}`, `Requirement: ${form.requirement}`, `Property type: ${form.propertyType}`, `Preferred location: ${form.location || "Open to suggestions"}`, `Budget: ${form.budget || "To be discussed"}`, `Timeline: ${form.timeline}`, campaign ? `Campaign: ${campaign}` : ""].filter(Boolean).join("\n");
-    window.open(`https://wa.me/919391675372?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+    window.open(`https://wa.me/916302966604?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
   };
 
   const inputClass = "rounded-xl border border-border bg-white px-4 py-3.5 font-normal outline-none focus:border-accent focus:ring-2 focus:ring-accent/10 transition";
@@ -43,7 +43,7 @@ const PropertyConsultationPage = () => {
               <div className="mt-8 grid gap-4">
                 {["Local guidance focused on Nellore", "Residential, plots, land and commercial requirements", "Clear next steps for shortlisting and site visits"].map((item) => <p key={item} className="flex gap-3 items-start"><span className="w-8 h-8 rounded-full bg-brand-purple/10 text-brand-purple flex items-center justify-center shrink-0"><CheckCircle2 size={18} /></span><span className="pt-1 font-medium">{item}</span></p>)}
               </div>
-              <a href="tel:+919391675372" onClick={() => trackEvent("phone_click", { placement: "consultation_hero", phone_number: "primary" })} className="inline-flex items-center gap-2 mt-9 text-brand-purple font-semibold hover:text-accent transition-colors"><Phone size={18} /> Prefer to call? +91 93916 75372</a>
+              <a href="tel:+916302966604" onClick={() => trackEvent("phone_click", { placement: "consultation_hero", phone_number: "primary" })} className="inline-flex items-center gap-2 mt-9 text-brand-purple font-semibold hover:text-accent transition-colors"><Phone size={18} /> Prefer to call? +91 63029 66604</a>
             </div>
 
             <form onSubmit={submit} onFocus={markStarted} className="rounded-3xl bg-white text-card-foreground p-6 md:p-8 border border-border shadow-2xl space-y-5">
