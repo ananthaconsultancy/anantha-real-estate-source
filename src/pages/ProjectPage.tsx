@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Building2, MapPin, Phone } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, MapPin, Phone, CheckCircle2, FileText, Trees, Route, Waves, Dumbbell, Gamepad2 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -29,7 +29,7 @@ const ProjectPage = () => {
     <div className="min-h-screen bg-background">
       <SEO title={project.seoTitle} description={project.seoDescription} path={`/project/${project.slug}`} />
       <Navbar />
-      <main>
+      <main id="overview">
         <section className="pt-28 md:pt-32 pb-16 md:pb-20 bg-[radial-gradient(circle_at_80%_10%,rgba(94,177,227,0.2),transparent_30%),linear-gradient(135deg,#fff,#f5f7ff)] border-b border-border">
           <div className="container mx-auto px-4">
             <Link to="/projects" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-brand-purple transition-colors mb-8"><ArrowLeft size={16} /> Back to Projects</Link>
@@ -52,6 +52,14 @@ const ProjectPage = () => {
           </div>
         </section>
 
+        <nav className="sticky top-16 z-30 bg-white/95 backdrop-blur border-y border-border">
+          <div className="container mx-auto px-4 overflow-x-auto">
+            <div className="flex min-w-max gap-7 py-4 text-sm font-semibold text-[#17152d]">
+              <a href="#overview">Overview</a><a href="#highlights">Highlights</a><a href="#amenities">Amenities</a><a href="#location">Location</a><a href="#documents">Documents</a><a href="#enquire">Enquire</a>
+            </div>
+          </div>
+        </nav>
+
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4">
             <div className="aspect-[16/7] md:aspect-[16/6] rounded-3xl bg-gradient-to-br from-[#eef4ff] to-[#e9e8ff] flex items-center justify-center overflow-hidden relative shadow-sm border border-border">
@@ -61,13 +69,44 @@ const ProjectPage = () => {
           </div>
         </section>
 
-        <section className="py-16 bg-gradient-to-b from-white to-[#f7f9ff]">
+        <section id="highlights" className="py-16 md:py-24 bg-gradient-to-b from-white to-[#f7f9ff]">
           <div className="container mx-auto px-4">
             <p className="text-xs uppercase tracking-[0.2em] font-bold text-accent mb-2">Project Highlights</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-8">What defines this project</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{project.highlights.map((highlight) => <div key={highlight} className="bg-white border border-border rounded-2xl p-5 shadow-sm"><p className="text-foreground font-medium">{highlight}</p></div>)}</div>
           </div>
         </section>
+
+        {isMotherlandProject && (
+          <>
+            <section id="amenities" className="py-16 md:py-24 bg-[#17152d] text-white">
+              <div className="container mx-auto px-4">
+                <p className="text-xs uppercase tracking-[0.22em] font-bold text-[#8cccf0] mb-3">Lifestyle & Infrastructure</p>
+                <h2 className="font-display text-4xl md:text-6xl font-bold max-w-3xl mb-10">Designed around everyday living.</h2>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {[
+                    [Route,"Internal Roads"],[Trees,"Open & Green Spaces"],[CheckCircle2,"Planned Layout"],[FileText,"Approval Documents"],
+                    ...(project.slug === "motherland-crkr-sunrise-city" ? [[Waves,"Swimming Pool"],[Dumbbell,"Indoor Gym"],[Gamepad2,"Indoor Games"],[Building2,"Club House"]] : [])
+                  ].map(([Icon,label]: any) => <div key={label} className="rounded-2xl border border-white/15 p-6 bg-white/5"><Icon className="mb-5 text-[#8cccf0]" size={30}/><p className="font-semibold">{label}</p></div>)}
+                </div>
+              </div>
+            </section>
+
+            <section id="location" className="py-16 md:py-24 bg-[#f7f5f0]">
+              <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-10 items-center">
+                <div><p className="text-xs uppercase tracking-[0.22em] font-bold text-[#6044b8] mb-3">Location</p><h2 className="font-display text-4xl md:text-6xl font-bold text-[#17152d] mb-6">Connected to what matters.</h2><p className="text-lg text-muted-foreground leading-relaxed">{project.location}. Contact our team for the exact site location, route guidance and site-visit coordination.</p></div>
+                <div className="min-h-[330px] rounded-[2rem] bg-white border border-black/5 shadow-sm flex items-center justify-center"><div className="text-center px-8"><MapPin size={50} className="mx-auto text-[#6044b8] mb-4"/><p className="font-display text-2xl font-bold">{project.location}</p><Button className="mt-6" variant="outline" asChild><Link to="/contact">Plan a Site Visit</Link></Button></div></div>
+              </div>
+            </section>
+
+            <section id="documents" className="py-16 md:py-24 bg-white">
+              <div className="container mx-auto px-4 max-w-5xl">
+                <div className="text-center mb-10"><p className="text-xs uppercase tracking-[0.22em] font-bold text-[#6044b8] mb-3">Project Documentation</p><h2 className="font-display text-4xl md:text-5xl font-bold">Make an informed property decision.</h2></div>
+                <div className="rounded-[2rem] border border-border bg-[#f7f9ff] p-7 md:p-10 flex flex-col md:flex-row gap-7 md:items-center md:justify-between"><div><h3 className="font-display text-2xl font-bold mb-2">Need layout and approval details?</h3><p className="text-muted-foreground max-w-2xl">Anantha Real Estate can provide the relevant project documents for customer verification. Live plot inventory and internal price sheets are intentionally not published online.</p></div><Button variant="brand" size="lg" asChild><Link to="/contact">Request Details <ArrowRight size={18}/></Link></Button></div>
+              </div>
+            </section>
+          </>
+        )}
 
         {!isMotherlandProject && (
           <section className="py-16 bg-white">
@@ -79,7 +118,7 @@ const ProjectPage = () => {
         )}
 
         {isMotherlandProject && (
-          <section className="py-14 bg-white border-t border-border">
+          <section id="enquire" className="py-14 bg-white border-t border-border">
             <div className="container mx-auto px-4 max-w-4xl text-center">
               <p className="text-xs uppercase tracking-[0.2em] font-bold text-accent mb-3">Project Enquiries</p>
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Speak with Anantha Real Estate</h2>
