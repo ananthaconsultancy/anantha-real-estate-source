@@ -44,8 +44,13 @@ const ProjectsPage = () => {
                 <article key={project.slug} className="group bg-white rounded-[2rem] overflow-hidden border border-black/5 shadow-sm hover:shadow-xl transition-all duration-500">
                   <div className="grid lg:grid-cols-[1.15fr_0.85fr] min-h-[420px]">
                     <div className="relative min-h-[320px] lg:min-h-full overflow-hidden bg-gradient-to-br from-[#dcecff] via-[#eeeafa] to-[#d9d5ed]">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(94,177,227,.45),transparent_30%)]" />
-                      <div className="absolute inset-x-0 bottom-0 p-7 md:p-9 bg-gradient-to-t from-black/55 to-transparent text-white">
+                      {project.slug === "motherland-green-meadows" ? (
+                        <img src="/projects/motherland/green-meadows/aerial-01.jpg" alt="Motherland Green Meadows, Brahmadevam" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                      ) : (
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(94,177,227,.45),transparent_30%)]" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 p-7 md:p-9 text-white">
                         <span className="text-xs uppercase tracking-[0.22em] font-semibold">{project.companyName}</span>
                         <h3 className="font-display text-3xl md:text-5xl font-bold mt-2">{project.name}</h3>
                       </div>
