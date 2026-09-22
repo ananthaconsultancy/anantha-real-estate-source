@@ -4,18 +4,22 @@ import { Link, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
-import { getPropertyBySlug } from "@/data/properties";
+import { usePublicProperty } from "@/hooks/usePublicProperties";
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
 import PremiumCTA from "@/components/PremiumCTA";
 
 const PropertyPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const property = slug ? getPropertyBySlug(slug) : undefined;
+  const { property, loading } = usePublicProperty(slug);
 
   useEffect(() => {
     if (property) trackEvent("property_view", { property_slug: property.slug, property_type: property.type, location: property.location, status: property.status });
   }, [property]);
+
+  if (loading) {
+    return <div className="min-h-screen bg-background"><Navbar /><main className="pt-32 pb-24 container mx-auto px-4 text-center">Loading verified property…</main><Footer /></div>;
+  }
 
   if (!property) {
     return (
