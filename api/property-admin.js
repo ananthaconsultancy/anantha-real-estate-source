@@ -94,7 +94,19 @@ export default async function handler(req, res) {
     const verificationStatus = String(body.verificationStatus || "").trim().toUpperCase();
     const publishStatus = String(body.publishStatus || "").trim().toUpperCase();
     const adminNotes = String(body.adminNotes || "").trim().slice(0, 1500);
+    const availabilityStatus = String(body.availabilityStatus || "").trim().toUpperCase();
     if (!publicId) return send(res, 400, { error: "Invalid property." });
+    if (availabilityStatus) {
+      if (!["AVAILABLE","HOLD","SOLD","WITHDRAWN"].includes(availabilityStatus)) return send(res,400,{error:"Invalid availability status."});
+      await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS availability_status TEXT NOT NULL DEFAULT 'AVAILABLE'`;
+      const current=await sql`SELECT availability_status,publish_status FROM property_listings WHERE public_id=${publicId} LIMIT 1`;
+      if(!current.length)return send(res,404,{error:"Property not found."});
+      const nextPublish=["SOLD","WITHDRAWN"].includes(availabilityStatus)?"UNPUBLISHED":current[0].publish_status;
+      const updated=await sql`UPDATE property_listings SET availability_status=${availabilityStatus},publish_status=${nextPublish},updated_at=NOW() WHERE public_id=${publicId} RETURNING public_id,availability_status,publish_status`;
+      await sql`CREATE TABLE IF NOT EXISTS property_audit_logs (id BIGSERIAL PRIMARY KEY, property_public_id TEXT NOT NULL, action TEXT NOT NULL, actor_email TEXT NOT NULL, previous_verification_status TEXT, new_verification_status TEXT, notes TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`;
+      await sql`INSERT INTO property_audit_logs(property_public_id,action,actor_email,previous_verification_status,new_verification_status,notes) VALUES(${publicId},${"AVAILABILITY_STATUS_CHANGED"},${session.email},${current[0].availability_status||"AVAILABLE"},${availabilityStatus},${adminNotes})`;
+      return send(res,200,{ok:true,listing:updated[0]});
+    }
     if (publishStatus) {
       if (!["DRAFT","PUBLISHED","UNPUBLISHED"].includes(publishStatus)) return send(res,400,{error:"Invalid publication status."});
       await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS publish_status TEXT NOT NULL DEFAULT 'DRAFT'`;
