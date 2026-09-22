@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 const GBPAdmin = lazy(() => import("./pages/GBPAdmin"));
 const PropertyAdmin = lazy(() => import("./pages/PropertyAdmin"));
+const EnquiryAdmin = lazy(() => import("./pages/EnquiryAdmin"));
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -33,6 +34,9 @@ const App = () => {
         <GBPAdmin />
       </Suspense>
     );
+  }
+  if (adminPath === "/admin/enquiries") {
+    return <Suspense fallback={<p>Loading enquiry operations…</p>}><EnquiryAdmin /></Suspense>;
   }
   if (adminPath === "/admin/properties") {
     return (
