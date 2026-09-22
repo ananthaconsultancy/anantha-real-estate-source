@@ -30,7 +30,7 @@ function publicListing(row){
     whatsappPhone:"+916302966604",
     image:photos[0],
     gallery:photos.slice(1).map((src,i)=>({src,alt:`Property photo ${i+2}`})),
-    publishedAt:row.verified_at||row.updated_at,
+    publishedAt:row.published_at||row.verified_at||row.updated_at,
     updatedAt:row.updated_at
   };
 }
@@ -38,10 +38,12 @@ export default async function handler(req,res){
   if(req.method!=="GET"){res.setHeader("Allow","GET");return send(res,405,{error:"Method not allowed"});}
   const sql=await getSql();if(!sql)return send(res,503,{error:"Public property inventory is not configured."});
   try{
+    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS publish_status TEXT NOT NULL DEFAULT 'DRAFT'`;
+    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS published_at TIMESTAMPTZ`;
     const id=String(req.query?.id||"").trim().toUpperCase();
     const rows=id
-      ? await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,updated_at FROM property_listings WHERE public_id=${id} AND verification_status='APPROVED' AND status='VERIFIED' LIMIT 1`
-      : await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,updated_at FROM property_listings WHERE verification_status='APPROVED' AND status='VERIFIED' ORDER BY verified_at DESC NULLS LAST,updated_at DESC LIMIT 250`;
+      ? await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,published_at,updated_at FROM property_listings WHERE public_id=${id} AND verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' LIMIT 1`
+      : await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,updated_at FROM property_listings WHERE verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' ORDER BY verified_at DESC NULLS LAST,updated_at DESC LIMIT 250`;
     const listings=rows.map(publicListing);
     if(id&&!listings.length)return send(res,404,{error:"Property not found."});
     return send(res,200,id?{listing:listings[0]}:{listings});
