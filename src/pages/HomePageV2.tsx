@@ -20,7 +20,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import Testimonials from "@/components/Testimonials";
-import { getPublicProperties, propertyCategories } from "@/data/properties";
+import { propertyCategories } from "@/data/properties";
+import { usePublicProperties } from "@/hooks/usePublicProperties";
 import { projects } from "@/data/projects";
 import { propertyFallbackImage, stockImages } from "@/data/stockImages";
 
@@ -98,7 +99,8 @@ const whyItems = [
 
 const HomePageV2 = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const publicProperties = getPublicProperties().slice(0, 4);
+  const { properties: verifiedProperties } = usePublicProperties();
+  const publicProperties = verifiedProperties.slice(0, 4);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
