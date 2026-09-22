@@ -98,6 +98,8 @@ export default async function handler(req, res) {
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS admin_notes TEXT`;
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS verified_by TEXT`;
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS verified_at TIMESTAMPTZ`;
+    await sql`CREATE TABLE IF NOT EXISTS property_audit_logs (id BIGSERIAL PRIMARY KEY, property_public_id TEXT NOT NULL, action TEXT NOT NULL, actor_email TEXT NOT NULL, previous_verification_status TEXT, new_verification_status TEXT, notes TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`;
+    const previous = await sql`SELECT verification_status FROM property_listings WHERE public_id=${publicId} LIMIT 1`;
     const status = verificationStatus === "APPROVED" ? "VERIFIED" : verificationStatus === "REJECTED" ? "REJECTED" : "NEW";
     const result = await sql`
       UPDATE property_listings
@@ -106,6 +108,7 @@ export default async function handler(req, res) {
       RETURNING public_id, verification_status, status, admin_notes, verified_by, verified_at
     `;
     if (!result.length) return send(res, 404, { error: "Property not found." });
+    await sql`INSERT INTO property_audit_logs(property_public_id,action,actor_email,previous_verification_status,new_verification_status,notes) VALUES(${publicId},${"VERIFICATION_STATUS_CHANGED"},${session.email},${previous[0]?.verification_status || null},${verificationStatus},${adminNotes})`;
     return send(res, 200, { ok: true, listing: result[0] });
   } catch (error) {
     console.error("property-admin error", error);
