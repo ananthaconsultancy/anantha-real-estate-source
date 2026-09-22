@@ -75,6 +75,8 @@ export default async function handler(req, res) {
     const sql = neon(databaseUrl());
 
     if (req.method === "GET") {
+      await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS publish_status TEXT NOT NULL DEFAULT 'DRAFT'`;
+      await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS published_at TIMESTAMPTZ`;
       const rows = await sql`SELECT * FROM property_listings ORDER BY created_at DESC LIMIT 250`;
       return send(res, 200, { email: session.email, csrf: session.csrf, listings: rows });
     }
@@ -90,8 +92,22 @@ export default async function handler(req, res) {
     const body = req.body || {};
     const publicId = String(body.publicId || "").trim();
     const verificationStatus = String(body.verificationStatus || "").trim().toUpperCase();
+    const publishStatus = String(body.publishStatus || "").trim().toUpperCase();
     const adminNotes = String(body.adminNotes || "").trim().slice(0, 1500);
-    if (!publicId || !["PENDING", "APPROVED", "NEEDS_CORRECTION", "REJECTED"].includes(verificationStatus)) {
+    if (!publicId) return send(res, 400, { error: "Invalid property." });
+    if (publishStatus) {
+      if (!["DRAFT","PUBLISHED","UNPUBLISHED"].includes(publishStatus)) return send(res,400,{error:"Invalid publication status."});
+      await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS publish_status TEXT NOT NULL DEFAULT 'DRAFT'`;
+      await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS published_at TIMESTAMPTZ`;
+      const current=await sql`SELECT verification_status,publish_status FROM property_listings WHERE public_id=${publicId} LIMIT 1`;
+      if(!current.length) return send(res,404,{error:"Property not found."});
+      if(publishStatus==="PUBLISHED"&&current[0].verification_status!=="APPROVED") return send(res,409,{error:"Only approved properties can be published."});
+      const updated=await sql`UPDATE property_listings SET publish_status=${publishStatus},published_at=CASE WHEN ${publishStatus}='PUBLISHED' THEN COALESCE(published_at,NOW()) ELSE published_at END,updated_at=NOW() WHERE public_id=${publicId} RETURNING public_id,verification_status,status,publish_status,published_at`;
+      await sql`CREATE TABLE IF NOT EXISTS property_audit_logs (id BIGSERIAL PRIMARY KEY, property_public_id TEXT NOT NULL, action TEXT NOT NULL, actor_email TEXT NOT NULL, previous_verification_status TEXT, new_verification_status TEXT, notes TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`;
+      await sql`INSERT INTO property_audit_logs(property_public_id,action,actor_email,previous_verification_status,new_verification_status,notes) VALUES(${publicId},${"PUBLICATION_STATUS_CHANGED"},${session.email},${current[0].publish_status||"DRAFT"},${publishStatus},${adminNotes})`;
+      return send(res,200,{ok:true,listing:updated[0]});
+    }
+    if (!["PENDING", "APPROVED", "NEEDS_CORRECTION", "REJECTED"].includes(verificationStatus)) {
       return send(res, 400, { error: "Invalid property or verification status." });
     }
 
