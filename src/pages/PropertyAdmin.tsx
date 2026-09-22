@@ -10,6 +10,7 @@ type Listing = Record<string, any> & {
   location: string;
   verification_status?: string;
   status?: string;
+  publish_status?: string;
   admin_notes?: string;
   photos?: unknown;
   created_at?: string;
@@ -96,6 +97,16 @@ export default function PropertyAdmin() {
 
   const filtered = useMemo(() => listings.filter((l) => (l.verification_status || "PENDING") === filter), [listings, filter]);
   const counts = useMemo(() => Object.fromEntries(statusOptions.map((s) => [s.value, listings.filter((l) => (l.verification_status || "PENDING") === s.value).length])), [listings]);
+
+  async function updatePublication(publishStatus: string) {
+    if (!selected) return;
+    setBusy(true); setError("");
+    try {
+      const r=await fetch("/api/property-admin",{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-Token":csrf},body:JSON.stringify({publicId:selected.public_id,publishStatus,adminNotes:notes})});
+      const data=await r.json(); if(!r.ok) throw new Error(data.error||"Could not update publication status.");
+      setSelected(null); setNotes(""); await load();
+    } catch(e){setError(e instanceof Error?e.message:"Could not update publication status.");} finally {setBusy(false);}
+  }
 
   async function updateStatus(verificationStatus: string) {
     if (!selected) return;
@@ -202,6 +213,8 @@ export default function PropertyAdmin() {
                   {photosFrom(selected.photos).length > 0 && <div className="mt-6"><h3 className="font-bold mb-3">Uploaded Photos</h3><div className="grid grid-cols-2 md:grid-cols-3 gap-3">{photosFrom(selected.photos).map((src, i) => <a key={i} href={src} target="_blank" rel="noreferrer"><img src={src} alt={`Property ${i + 1}`} className="w-full aspect-square object-cover rounded-xl border"/></a>)}</div></div>}
 
                   <label className="grid gap-2 mt-6 text-sm font-semibold">Admin notes<textarea rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} className="rounded-xl border p-3 font-normal" placeholder="Verification notes, missing documents, correction required…"/></label>
+
+                  {selected.verification_status === "APPROVED" && <div className="mt-6 rounded-2xl border bg-[#f7f9ff] p-4"><div className="flex items-center justify-between gap-3"><div><p className="font-bold">Public listing</p><p className="text-xs text-slate-500 mt-1">Verification and publication are separate. Publish only after public details are ready.</p></div><span className="rounded-full bg-white border px-3 py-1 text-xs font-semibold">{selected.publish_status || "DRAFT"}</span></div><div className="grid sm:grid-cols-2 gap-3 mt-4">{selected.publish_status === "PUBLISHED" ? <button disabled={busy} onClick={() => void updatePublication("UNPUBLISHED")} className="rounded-xl border px-4 py-3 font-semibold">Unpublish</button> : <button disabled={busy} onClick={() => void updatePublication("PUBLISHED")} className="rounded-xl bg-[#605e8a] text-white px-4 py-3 font-semibold">Publish to Website</button>}<button disabled={busy} onClick={() => void updatePublication("DRAFT")} className="rounded-xl border px-4 py-3 font-semibold">Keep as Draft</button></div></div>}
 
                   <div className="grid sm:grid-cols-2 gap-3 mt-6">
                     <button disabled={busy} onClick={() => void updateStatus("APPROVED")} className="rounded-xl bg-emerald-600 text-white px-4 py-3 font-semibold">Verify & Approve</button>
