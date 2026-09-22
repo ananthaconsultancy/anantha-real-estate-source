@@ -11,6 +11,7 @@ type Listing = Record<string, any> & {
   verification_status?: string;
   status?: string;
   publish_status?: string;
+  availability_status?: string;
   admin_notes?: string;
   photos?: unknown;
   created_at?: string;
@@ -97,6 +98,11 @@ export default function PropertyAdmin() {
 
   const filtered = useMemo(() => listings.filter((l) => (l.verification_status || "PENDING") === filter), [listings, filter]);
   const counts = useMemo(() => Object.fromEntries(statusOptions.map((s) => [s.value, listings.filter((l) => (l.verification_status || "PENDING") === s.value).length])), [listings]);
+
+  async function updateAvailability(availabilityStatus: string) {
+    if (!selected) return; setBusy(true); setError("");
+    try { const r=await fetch("/api/property-admin",{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-Token":csrf},body:JSON.stringify({publicId:selected.public_id,availabilityStatus,adminNotes:notes})});const data=await r.json();if(!r.ok)throw new Error(data.error||"Could not update availability.");setSelected(null);await load();} catch(e){setError(e instanceof Error?e.message:"Could not update availability.");} finally{setBusy(false);}
+  }
 
   async function updatePublication(publishStatus: string) {
     if (!selected) return;
@@ -214,6 +220,7 @@ export default function PropertyAdmin() {
 
                   <label className="grid gap-2 mt-6 text-sm font-semibold">Admin notes<textarea rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} className="rounded-xl border p-3 font-normal" placeholder="Verification notes, missing documents, correction required…"/></label>
 
+                  <div className="mt-6 rounded-2xl border bg-white p-4"><div className="flex items-center justify-between"><div><p className="font-bold">Availability</p><p className="text-xs text-slate-500">Sold and withdrawn properties are automatically unpublished.</p></div><span className="rounded-full border px-3 py-1 text-xs font-semibold">{selected.availability_status || "AVAILABLE"}</span></div><div className="grid grid-cols-2 gap-2 mt-4">{["AVAILABLE","HOLD","SOLD","WITHDRAWN"].map(x=><button key={x} disabled={busy} onClick={()=>void updateAvailability(x)} className="rounded-xl border px-3 py-2 text-sm font-semibold">{x}</button>)}</div></div>
                   {selected.verification_status === "APPROVED" && <div className="mt-6 rounded-2xl border bg-[#f7f9ff] p-4"><div className="flex items-center justify-between gap-3"><div><p className="font-bold">Public listing</p><p className="text-xs text-slate-500 mt-1">Verification and publication are separate. Publish only after public details are ready.</p></div><span className="rounded-full bg-white border px-3 py-1 text-xs font-semibold">{selected.publish_status || "DRAFT"}</span></div><div className="grid sm:grid-cols-2 gap-3 mt-4">{selected.publish_status === "PUBLISHED" ? <button disabled={busy} onClick={() => void updatePublication("UNPUBLISHED")} className="rounded-xl border px-4 py-3 font-semibold">Unpublish</button> : <button disabled={busy} onClick={() => void updatePublication("PUBLISHED")} className="rounded-xl bg-[#605e8a] text-white px-4 py-3 font-semibold">Publish to Website</button>}<button disabled={busy} onClick={() => void updatePublication("DRAFT")} className="rounded-xl border px-4 py-3 font-semibold">Keep as Draft</button></div></div>}
 
                   <div className="grid sm:grid-cols-2 gap-3 mt-6">
