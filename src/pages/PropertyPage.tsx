@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft, BadgeCheck, CalendarCheck, MapPin, MessageCircle, Phone, Ruler } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -12,6 +12,8 @@ import PremiumCTA from "@/components/PremiumCTA";
 const PropertyPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { property, loading } = usePublicProperty(slug);
+  const [enquiry,setEnquiry]=useState({name:"",phone:"",email:"",requirement:"",consent:false});
+  const [enquiryState,setEnquiryState]=useState<{busy:boolean;message:string;error:boolean}>({busy:false,message:"",error:false});
 
   useEffect(() => {
     if (property) trackEvent("property_view", { property_slug: property.slug, property_type: property.type, location: property.location, status: property.status });
@@ -37,6 +39,18 @@ const PropertyPage: React.FC = () => {
   const whatsappNumber = (property.whatsappPhone || property.enquiryPhone).replace(/\D/g, "");
   const whatsappText = encodeURIComponent(`Hi Anantha Real Estate, I am interested in ${property.name} at ${property.location}. Please share the current availability and details.`);
   const eventContext = { property_slug: property.slug, property_type: property.type, location: property.location };
+
+  async function submitEnquiry(e: React.FormEvent) {
+    e.preventDefault();
+    setEnquiryState({busy:true,message:"",error:false});
+    try {
+      const r=await fetch("/api/property-enquiries",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({propertyPublicId:property.publicId,name:enquiry.name,phone:enquiry.phone,email:enquiry.email,requirement:enquiry.requirement,consent:enquiry.consent})});
+      const data=await r.json(); if(!r.ok) throw new Error(data.error||"Could not submit enquiry.");
+      setEnquiryState({busy:false,message:`Enquiry received — reference ${data.enquiryRef}.`,error:false});
+      setEnquiry({name:"",phone:"",email:"",requirement:"",consent:false});
+      trackEvent("property_enquiry_submit",eventContext);
+    } catch(err){setEnquiryState({busy:false,message:err instanceof Error?err.message:"Could not submit enquiry.",error:true});}
+  }
 
   const facts = [
     property.area ? ["Area", property.area, Ruler] : null,
@@ -102,7 +116,7 @@ const PropertyPage: React.FC = () => {
                 <p className="text-xs uppercase tracking-[0.18em] font-bold text-accent mb-2">Property Enquiry</p>
                 <h2 className="font-display text-2xl md:text-3xl font-bold mb-4">Interested in this property?</h2>
                 <p className="text-muted-foreground mb-6">Reconfirm current availability, pricing and arrange a site visit with Anantha Real Estate.</p>
-                <div className="space-y-3"><Button asChild variant="brand" className="w-full"><a href="https://calendly.com/jvk-aconsultancy/30min" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("site_visit_click", eventContext)}>Book a Site Visit</a></Button><Button asChild variant="outline" className="w-full"><a href={`https://wa.me/${whatsappNumber}?text=${whatsappText}`} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("whatsapp_click", eventContext)}><MessageCircle size={17} /> WhatsApp</a></Button><Button asChild variant="outline" className="w-full"><a href={`tel:${property.enquiryPhone}`} onClick={() => trackEvent("phone_click", eventContext)}><Phone size={17} /> Call {property.enquiryPhone.replace("+91", "+91 ")}</a></Button></div>
+                <form onSubmit={submitEnquiry} className="space-y-3 mb-5"><input required value={enquiry.name} onChange={e=>setEnquiry({...enquiry,name:e.target.value})} placeholder="Your name" className="w-full rounded-xl border p-3"/><input required value={enquiry.phone} onChange={e=>setEnquiry({...enquiry,phone:e.target.value})} placeholder="Phone number" className="w-full rounded-xl border p-3"/><input type="email" value={enquiry.email} onChange={e=>setEnquiry({...enquiry,email:e.target.value})} placeholder="Email (optional)" className="w-full rounded-xl border p-3"/><textarea value={enquiry.requirement} onChange={e=>setEnquiry({...enquiry,requirement:e.target.value})} placeholder="Requirement / preferred site visit time" rows={3} className="w-full rounded-xl border p-3"/><label className="flex items-start gap-2 text-xs text-muted-foreground"><input required type="checkbox" checked={enquiry.consent} onChange={e=>setEnquiry({...enquiry,consent:e.target.checked})} className="mt-0.5"/>I agree that Anantha Real Estate may contact me about this property enquiry.</label><Button disabled={enquiryState.busy} type="submit" variant="brand" className="w-full">{enquiryState.busy?"Submitting…":"Send Enquiry"}</Button>{enquiryState.message&&<p className={`text-xs ${enquiryState.error?"text-rose-600":"text-emerald-700"}`}>{enquiryState.message}</p>}</form><div className="space-y-3"><Button asChild variant="brand" className="w-full"><a href="https://calendly.com/jvk-aconsultancy/30min" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("site_visit_click", eventContext)}>Book a Site Visit</a></Button><Button asChild variant="outline" className="w-full"><a href={`https://wa.me/${whatsappNumber}?text=${whatsappText}`} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("whatsapp_click", eventContext)}><MessageCircle size={17} /> WhatsApp</a></Button><Button asChild variant="outline" className="w-full"><a href={`tel:${property.enquiryPhone}`} onClick={() => trackEvent("phone_click", eventContext)}><Phone size={17} /> Call {property.enquiryPhone.replace("+91", "+91 ")}</a></Button></div>
                 <p className="mt-6 text-xs leading-relaxed text-muted-foreground">Availability, price, approvals and property documents can change. Reconfirm material details and complete independent legal/document verification before making a purchase decision.</p>
               </aside>
             </div>
