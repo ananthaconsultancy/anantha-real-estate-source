@@ -24,7 +24,7 @@ function publicListing(row){
     bedrooms:row.bedrooms?Number(row.bedrooms):undefined,
     facing:row.facing||undefined,
     shortDescription:[row.property_type,row.area&&`${row.area} ${row.area_unit||""}`,row.facing&&`${row.facing} facing`].filter(Boolean).join(" · "),
-    description:row.notes||`Verified ${row.property_type.toLowerCase()} opportunity in ${row.location}. Contact Anantha Real Estate for current availability, pricing and site visit coordination.`,
+    description:`Verified ${row.property_type.toLowerCase()} opportunity in ${row.location}. Contact Anantha Real Estate for current availability, pricing and site visit coordination.`,
     highlights:[row.property_age&&`Condition: ${row.property_age}`,row.floors&&`Floors: ${row.floors}`,row.constructed_area&&`Constructed area: ${row.constructed_area}`,row.parking&&`Parking: ${row.parking}`,row.godown_plot_type&&`Classification: ${row.godown_plot_type}`].filter(Boolean),
     enquiryPhone:"+916302966604",
     whatsappPhone:"+916302966604",
@@ -40,8 +40,8 @@ export default async function handler(req,res){
   try{
     const id=String(req.query?.id||"").trim().toUpperCase();
     const rows=id
-      ? await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,notes,verified_at,updated_at FROM property_listings WHERE public_id=${id} AND verification_status='APPROVED' AND status='VERIFIED' LIMIT 1`
-      : await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,notes,verified_at,updated_at FROM property_listings WHERE verification_status='APPROVED' AND status='VERIFIED' ORDER BY verified_at DESC NULLS LAST,updated_at DESC LIMIT 250`;
+      ? await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,updated_at FROM property_listings WHERE public_id=${id} AND verification_status='APPROVED' AND status='VERIFIED' LIMIT 1`
+      : await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,updated_at FROM property_listings WHERE verification_status='APPROVED' AND status='VERIFIED' ORDER BY verified_at DESC NULLS LAST,updated_at DESC LIMIT 250`;
     const listings=rows.map(publicListing);
     if(id&&!listings.length)return send(res,404,{error:"Property not found."});
     return send(res,200,id?{listing:listings[0]}:{listings});
