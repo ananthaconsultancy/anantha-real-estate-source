@@ -7,9 +7,11 @@ import SEO from "@/components/SEO";
 import PropertyListingCard from "@/components/PropertyListingCard";
 import PremiumPageHero from "@/components/PremiumPageHero";
 import PremiumCTA from "@/components/PremiumCTA";
-import { properties, propertyCategories } from "@/data/properties";
+import { propertyCategories } from "@/data/properties";
+import { usePublicProperties } from "@/hooks/usePublicProperties";
 
 const PropertyCategoryPage: React.FC = () => {
+  const { properties, loading, error } = usePublicProperties();
   const { category } = useParams<{ category: string }>();
   const categoryInfo = propertyCategories.find((item) => item.slug === category);
   const listings = properties.filter((property) => property.type === category && property.status !== "unavailable");
@@ -50,7 +52,7 @@ const PropertyCategoryPage: React.FC = () => {
               <div><p className="text-xs uppercase tracking-[0.2em] font-bold text-accent">Current Inventory</p><h2 className="font-display text-3xl md:text-4xl font-bold mt-2">Available {categoryInfo.name.toLowerCase()}</h2></div>
               <span className="text-sm text-muted-foreground">{listings.length} listing{listings.length === 1 ? "" : "s"}</span>
             </div>
-            {listings.length === 0 ? (
+            {loading ? <div className="rounded-2xl border bg-white p-10 text-center">Loading verified properties…</div> : error ? <div className="rounded-2xl border bg-white p-10 text-center text-muted-foreground">{error}</div> : listings.length === 0 ? (
               <div className="rounded-2xl border border-border bg-white p-10 text-center max-w-2xl mx-auto shadow-sm">
                 <h2 className="font-display text-2xl font-bold mb-3">No public listings published yet</h2>
                 <p className="text-muted-foreground mb-6">We publish listings only after relevant public details are confirmed. Share your requirement and our team can check current options.</p>
