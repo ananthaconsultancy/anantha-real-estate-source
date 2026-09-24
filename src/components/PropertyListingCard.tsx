@@ -19,12 +19,12 @@ const PropertyListingCard: React.FC<{ property: Property }> = ({ property }) => 
   const image = property.image || propertyFallbackImage(property.type);
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-[#e2e7f4] bg-white shadow-[0_8px_26px_rgba(34,42,92,0.07)] hover:shadow-[0_18px_42px_rgba(46,39,120,0.14)] transition-shadow">
+    <article className="overflow-hidden rounded-xl border border-slate-200 bg-white transition-colors hover:border-slate-300">
       <div className="relative aspect-[16/9] bg-gradient-to-br from-[#17105e] to-[#2387ef] overflow-hidden">
         <img
           src={image}
           alt={property.imageAlt || `${property.name} in ${property.location}`}
-          className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-300"
           loading="lazy"
         />
         <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-[#15133e]/82 to-transparent">
@@ -34,7 +34,7 @@ const PropertyListingCard: React.FC<{ property: Property }> = ({ property }) => 
             </span>
             {property.verified && (
               <span className="inline-flex items-center gap-1 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-[#2f227f]">
-                <BadgeCheck size={14} className="text-[#2387ef]" /> Listing details checked
+                <BadgeCheck size={14} className="text-[#2387ef]" /> Verified by ARE
               </span>
             )}
           </div>
@@ -45,12 +45,12 @@ const PropertyListingCard: React.FC<{ property: Property }> = ({ property }) => 
         <div className="flex items-center gap-2 text-sm text-slate-500">
           <MapPin size={15} className="text-[#4b2cab]" /> {property.location}, {property.city}
         </div>
-        <h2 className="font-display text-2xl font-bold mt-3 text-[#171942]">{property.name}</h2>
+        <h2 className="font-display text-2xl font-semibold tracking-tight mt-3 text-slate-950">{property.name}</h2>
         <p className="text-slate-500 mt-2 line-clamp-2">{property.shortDescription}</p>
 
         <div className="grid grid-cols-2 gap-3 mt-5 text-sm">
           {property.area && (
-            <div className="rounded-xl bg-gradient-to-br from-[#f7f9ff] to-[#f1efff] p-3">
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
               <span className="block text-slate-500">Area</span>
               <span className="font-semibold inline-flex items-center gap-1 mt-1 text-[#28235e]">
                 <Ruler size={14} /> {property.area}
@@ -58,7 +58,7 @@ const PropertyListingCard: React.FC<{ property: Property }> = ({ property }) => 
             </div>
           )}
           {property.priceLabel && (
-            <div className="rounded-xl bg-gradient-to-br from-[#f7f9ff] to-[#edf6ff] p-3">
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-3">
               <span className="block text-slate-500">Price</span>
               <span className="font-semibold mt-1 block text-[#28235e]">{property.priceLabel}</span>
             </div>
@@ -73,7 +73,7 @@ const PropertyListingCard: React.FC<{ property: Property }> = ({ property }) => 
 
         {verificationDate && (
           <p className="mt-3 inline-flex items-center gap-2 text-xs text-slate-500">
-            <CalendarCheck size={14} /> Listing details checked {verificationDate}
+            <CalendarCheck size={14} /> Verified by ARE · {verificationDate}
           </p>
         )}
 
