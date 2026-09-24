@@ -1,7 +1,9 @@
 const JSON_HEADERS = { "Content-Type": "application/json; charset=utf-8" };
 const send=(res,status,body)=>{res.statusCode=status;res.setHeader("Cache-Control","public, max-age=0, s-maxage=30, stale-while-revalidate=60");Object.entries(JSON_HEADERS).forEach(([k,v])=>res.setHeader(k,v));res.end(JSON.stringify(body));};
 async function getSql(){const url=process.env.ANANTHA_DATABASE_URL||process.env.POSTGRES_URL||process.env.DATABASE_URL;if(!url)return null;const {neon}=await import("@neondatabase/serverless");return neon(url);}
-const typeMap={Plot:"plots",Flat:"apartments",House:"villas",Godown:"commercial",Other:"land"};\nconst slugify=(v)=>String(v||"").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");\nfunction seoSlug(row){const p=row.property_type==="Flat"&&row.bedrooms?row.bedrooms+"-bhk-flat":row.property_type==="House"&&row.bedrooms?row.bedrooms+"-bhk-house":row.property_type;return slugify(p+"-"+row.location+"-nellore");}
+const typeMap={Plot:"plots",Flat:"apartments",House:"villas",Godown:"commercial",Other:"land"};
+const slugify=(v)=>String(v||"").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+function seoSlug(row){const p=row.property_type==="Flat"&&row.bedrooms?row.bedrooms+"-bhk-flat":row.property_type==="House"&&row.bedrooms?row.bedrooms+"-bhk-house":row.property_type;return slugify(p+"-"+row.location+"-nellore");}
 function publicListing(row){
   const type=typeMap[row.property_type]||"land";
   const slug=seoSlug(row);
@@ -68,7 +70,8 @@ export default async function handler(req,res){
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS public_photo_indexes JSONB`;
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS primary_photo_index INTEGER`;
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS photo_alt_texts JSONB`;
-    const lookup=String(req.query?.id||req.query?.slug||"").trim();\n    const id=/^PROP-/i.test(lookup)?lookup.toUpperCase():"";
+    const lookup=String(req.query?.id||req.query?.slug||"").trim();
+    const id=/^PROP-/i.test(lookup)?lookup.toUpperCase():"";
     const rows=id
       ? await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,per_unit_valuation,bedrooms,apartment_name,property_age,floors,constructed_area,parking,godown_plot_type,notes,photos,public_photo_indexes,primary_photo_index,photo_alt_texts,verified_at,published_at,updated_at FROM property_listings WHERE public_id=${id} AND verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' AND availability_status='AVAILABLE' LIMIT 1`
       : await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,per_unit_valuation,bedrooms,apartment_name,property_age,floors,constructed_area,parking,godown_plot_type,notes,photos,public_photo_indexes,primary_photo_index,photo_alt_texts,verified_at,updated_at FROM property_listings WHERE verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' AND availability_status='AVAILABLE' ORDER BY verified_at DESC NULLS LAST,updated_at DESC LIMIT 250`;
