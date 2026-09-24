@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { CheckCircle2, Clock3, Eye, RefreshCcw, ShieldCheck, XCircle, AlertTriangle, LogOut, LockKeyhole } from "lucide-react";
+import { CheckCircle2, Clock3, Eye, RefreshCcw, ShieldCheck, XCircle, AlertTriangle, LogOut, LockKeyhole, Pencil, Save } from "lucide-react";
 
 type Listing = Record<string, any> & {
   public_id: string;
@@ -54,6 +54,8 @@ export default function PropertyAdmin() {
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [adminPhotos, setAdminPhotos] = useState<string[]>([]);
+  const [editing, setEditing] = useState(false);
+  const [editDetails, setEditDetails] = useState<Record<string,string>>({});
 
   async function load() {
     setLoading(true);
@@ -100,6 +102,9 @@ export default function PropertyAdmin() {
   const filtered = useMemo(() => listings.filter((l) => (l.verification_status || "PENDING") === filter), [listings, filter]);
   const counts = useMemo(() => Object.fromEntries(statusOptions.map((s) => [s.value, listings.filter((l) => (l.verification_status || "PENDING") === s.value).length])), [listings]);
 
+  const editableFields=[["property_type","Property Type"],["location","Location"],["area","Area"],["area_unit","Area Unit"],["facing","Facing"],["total_valuation","Total Valuation"],["per_unit_valuation","Per Unit Valuation"],["bedrooms","Bedrooms"],["apartment_name","Apartment Name"],["flat_number","Flat Number"],["property_age","Property Age / Condition"],["floors","Floors"],["constructed_area","Constructed Area"],["parking","Parking"],["godown_plot_type","Godown / Plot Type"],["notes","Additional Details"]] as const;
+  function beginEdit(){if(!selected)return;setEditDetails(Object.fromEntries(editableFields.map(([k])=>[k,String(selected[k]??"")])));setEditing(true);}
+  async function saveDetails(){if(!selected)return;setBusy(true);setError("");try{const r=await fetch("/api/property-admin",{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-Token":csrf},body:JSON.stringify({publicId:selected.public_id,editDetails})});const data=await r.json();if(!r.ok)throw new Error(data.error||"Could not save property details.");setSelected(data.listing);setListings(xs=>xs.map(x=>x.public_id===data.listing.public_id?data.listing:x));setEditing(false);}catch(e){setError(e instanceof Error?e.message:"Could not save property details.");}finally{setBusy(false);}}
   async function addPhotos() { if (!selected || !adminPhotos.length) return; setBusy(true); setError(""); try { const r=await fetch("/api/property-admin",{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-Token":csrf},body:JSON.stringify({publicId:selected.public_id,adminPhotos})}); const data=await r.json(); if(!r.ok)throw new Error(data.error||"Could not add photos."); setAdminPhotos([]); await load(); setSelected((s)=>s?{...s,photos:data.listing?.photos||s.photos}:s); } catch(e){setError(e instanceof Error?e.message:"Could not add photos.");} finally{setBusy(false);} }
 
   function choosePhotos(files: FileList | null) { if (!files||!selected) return; const remaining=Math.max(0,5-photosFrom(selected.photos).length); const chosen=Array.from(files).slice(0,remaining); setBusy(true);setError(""); Promise.all(chosen.map(file=>new Promise<string>((resolve,reject)=>{if(!file.type.startsWith("image/")||file.size>5*1024*1024)return reject(new Error("Each image must be under 5 MB."));const reader=new FileReader();reader.onload=async()=>{try{const alt=`${selected.property_type} in ${selected.location}`;const r=await fetch("/api/property-media",{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-Token":csrf},body:JSON.stringify({publicId:selected.public_id,dataUrl:String(reader.result),fileName:file.name,altText:alt})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Upload failed.");resolve(d.url)}catch(e){reject(e)}};reader.onerror=()=>reject(new Error("Could not read image."));reader.readAsDataURL(file)}))).then(x=>setAdminPhotos(x)).catch(e=>setError(e instanceof Error?e.message:"Upload failed.")).finally(()=>setBusy(false)); }
@@ -217,7 +222,7 @@ export default function PropertyAdmin() {
                 <div>
                   <div className="flex items-start justify-between gap-4"><div><p className="text-xs uppercase tracking-[0.18em] font-bold text-[#807cb7]">{selected.public_id}</p><h2 className="text-2xl font-bold mt-2">{selected.property_type} in {selected.location}</h2></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold">{selected.verification_status || "PENDING"}</span></div>
 
-                  <div className="grid sm:grid-cols-2 gap-3 mt-6">
+                  <div className="mt-6 flex items-center justify-between gap-3"><h3 className="font-bold">Property Details</h3><button disabled={busy} onClick={()=>editing?setEditing(false):beginEdit()} className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold"><Pencil size={15}/>{editing?"Cancel Edit":"Edit Details"}</button></div>{editing&&<div className="mt-4 rounded-2xl border bg-slate-50 p-4"><div className="grid sm:grid-cols-2 gap-4">{editableFields.map(([key,label])=><label key={key} className={`${key==="notes"?"sm:col-span-2":""} grid gap-1.5 text-xs font-semibold text-slate-600`}>{label}{key==="notes"?<textarea rows={5} value={editDetails[key]||""} onChange={e=>setEditDetails(x=>({...x,[key]:e.target.value}))} className="rounded-xl border bg-white p-3 text-sm font-normal"/>:key==="property_type"?<select value={editDetails[key]||""} onChange={e=>setEditDetails(x=>({...x,[key]:e.target.value}))} className="rounded-xl border bg-white p-3 text-sm font-normal">{["Plot","Flat","House","Godown","Other"].map(x=><option key={x}>{x}</option>)}</select>:<input value={editDetails[key]||""} onChange={e=>setEditDetails(x=>({...x,[key]:e.target.value}))} className="rounded-xl border bg-white p-3 text-sm font-normal"/>}</label>)}</div><button disabled={busy} onClick={()=>void saveDetails()} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#605e8a] px-5 py-3 text-sm font-semibold text-white"><Save size={16}/>Save Changes</button></div>}<div className="grid sm:grid-cols-2 gap-3 mt-4">
                     {Object.entries(selected).filter(([key, value]) => value !== null && value !== "" && !["id", "photos", "admin_notes"].includes(key)).map(([key, value]) => (
                       <div key={key} className="rounded-xl bg-slate-50 p-3"><p className="text-[11px] uppercase tracking-wide text-slate-400">{prettyKey(key)}</p><p className="text-sm font-medium mt-1 break-words">{typeof value === "object" ? JSON.stringify(value) : String(value)}</p></div>
                     ))}
