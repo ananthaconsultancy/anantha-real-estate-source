@@ -95,7 +95,16 @@ export default async function handler(req, res) {
     const publishStatus = String(body.publishStatus || "").trim().toUpperCase();
     const adminNotes = String(body.adminNotes || "").trim().slice(0, 1500);
     const availabilityStatus = String(body.availabilityStatus || "").trim().toUpperCase();
+    const adminPhotos = Array.isArray(body.adminPhotos) ? body.adminPhotos.filter((x) => typeof x === "string" && x.startsWith("data:image/") && x.length < 900000).slice(0, 5) : null;
     if (!publicId) return send(res, 400, { error: "Invalid property." });
+    if (adminPhotos) {
+      const current = await sql`SELECT photos FROM property_listings WHERE public_id=${publicId} LIMIT 1`;
+      if (!current.length) return send(res,404,{error:"Property not found."});
+      const existing = Array.isArray(current[0].photos) ? current[0].photos : [];
+      const merged = [...existing, ...adminPhotos].slice(0,5);
+      const updated = await sql`UPDATE property_listings SET photos=${JSON.stringify(merged)}::jsonb, updated_at=NOW() WHERE public_id=${publicId} RETURNING public_id,photos`;
+      return send(res,200,{ok:true,listing:updated[0]});
+    }
     if (availabilityStatus) {
       if (!["AVAILABLE","HOLD","SOLD","WITHDRAWN"].includes(availabilityStatus)) return send(res,400,{error:"Invalid availability status."});
       await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS availability_status TEXT NOT NULL DEFAULT 'AVAILABLE'`;
