@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { CheckCircle2, Clock3, Eye, RefreshCcw, ShieldCheck, XCircle, AlertTriangle, LogOut, LockKeyhole, Pencil, Save } from "lucide-react";
+import { CheckCircle2, Clock3, Eye, RefreshCcw, ShieldCheck, XCircle, AlertTriangle, LogOut, LockKeyhole, Pencil, Save, ExternalLink } from "lucide-react";
 
 type Listing = Record<string, any> & {
   public_id: string;
@@ -186,7 +186,7 @@ export default function PropertyAdmin() {
             <p className="text-slate-500 mt-2">Review owner submissions before they enter your verified inventory.</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            {email && <span className="text-sm text-slate-500">Signed in as {email}</span>}
+            {email && <span className="text-sm text-slate-500">Signed in as {email}</span>}<a href="/properties" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white">View Website <ExternalLink size={15}/></a>
             <button onClick={() => void load()} className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2 text-sm font-semibold"><RefreshCcw size={16}/> Refresh</button>
             <button disabled={busy} onClick={() => void logout()} className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2 text-sm font-semibold"><LogOut size={16}/> Sign out</button>
           </div>
