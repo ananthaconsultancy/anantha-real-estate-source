@@ -103,6 +103,26 @@ export default async function handler(req, res) {
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS public_photo_indexes JSONB`;
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS primary_photo_index INTEGER`;
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS photo_alt_texts JSONB`;
+    if (body.editDetails && typeof body.editDetails === "object") {
+      const e = body.editDetails;
+      const v = (key, max=500) => String(e[key] ?? "").trim().slice(0,max);
+      const allowedTypes=["Plot","Flat","House","Godown","Other"];
+      const propertyType=v("property_type",40);
+      if(!allowedTypes.includes(propertyType)) return send(res,400,{error:"Invalid property type."});
+      const location=v("location",180), area=v("area",60), areaUnit=v("area_unit",30), facing=v("facing",40), totalValuation=v("total_valuation",60);
+      if(!location||!area||!areaUnit||!facing||!totalValuation) return send(res,400,{error:"Location, area, unit, facing and valuation are required."});
+      const updated=await sql`UPDATE property_listings SET
+        property_type=${propertyType}, location=${location}, area=${area}, area_unit=${areaUnit}, facing=${facing},
+        total_valuation=${totalValuation}, per_unit_valuation=${v("per_unit_valuation",60)||null},
+        bedrooms=${v("bedrooms",20)||null}, apartment_name=${v("apartment_name",180)||null}, flat_number=${v("flat_number",60)||null},
+        property_age=${v("property_age",80)||null}, floors=${v("floors",30)||null}, constructed_area=${v("constructed_area",80)||null},
+        parking=${v("parking",80)||null}, godown_plot_type=${v("godown_plot_type",100)||null}, notes=${v("notes",3000)||null},
+        updated_at=NOW() WHERE public_id=${publicId} RETURNING *`;
+      if(!updated.length)return send(res,404,{error:"Property not found."});
+      await sql`CREATE TABLE IF NOT EXISTS property_audit_logs (id BIGSERIAL PRIMARY KEY, property_public_id TEXT NOT NULL, action TEXT NOT NULL, actor_email TEXT NOT NULL, previous_verification_status TEXT, new_verification_status TEXT, notes TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`;
+      await sql`INSERT INTO property_audit_logs(property_public_id,action,actor_email,notes) VALUES(${publicId},${"PROPERTY_DETAILS_EDITED"},${session.email},${"Admin edited property details"})`;
+      return send(res,200,{ok:true,listing:updated[0]});
+    }
     if (mediaAction) {
       const current=await sql`SELECT photos,public_photo_indexes,primary_photo_index,photo_alt_texts FROM property_listings WHERE public_id=${publicId} LIMIT 1`;
       if(!current.length)return send(res,404,{error:"Property not found."});
