@@ -96,7 +96,28 @@ export default async function handler(req, res) {
     const adminNotes = String(body.adminNotes || "").trim().slice(0, 1500);
     const availabilityStatus = String(body.availabilityStatus || "").trim().toUpperCase();
     const adminPhotos = Array.isArray(body.adminPhotos) ? body.adminPhotos.filter((x) => typeof x === "string" && x.startsWith("data:image/") && x.length < 900000).slice(0, 5) : null;
+    const mediaAction = String(body.mediaAction || "").trim().toUpperCase();
+    const mediaIndex = Number(body.mediaIndex);
+    const mediaAlt = String(body.mediaAlt || "").trim().slice(0, 180);
     if (!publicId) return send(res, 400, { error: "Invalid property." });
+    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS public_photo_indexes JSONB`;
+    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS primary_photo_index INTEGER`;
+    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS photo_alt_texts JSONB`;
+    if (mediaAction) {
+      const current=await sql`SELECT photos,public_photo_indexes,primary_photo_index,photo_alt_texts FROM property_listings WHERE public_id=${publicId} LIMIT 1`;
+      if(!current.length)return send(res,404,{error:"Property not found."});
+      const photos=Array.isArray(current[0].photos)?current[0].photos:[];
+      if(!Number.isInteger(mediaIndex)||mediaIndex<0||mediaIndex>=photos.length)return send(res,400,{error:"Invalid photo."});
+      let publicIndexes=Array.isArray(current[0].public_photo_indexes)?current[0].public_photo_indexes:photos.map((_,i)=>i);
+      let primary=Number.isInteger(current[0].primary_photo_index)?current[0].primary_photo_index:(publicIndexes[0]??null);
+      let alts=current[0].photo_alt_texts&&typeof current[0].photo_alt_texts==="object"?current[0].photo_alt_texts:{};
+      if(mediaAction==="TOGGLE_PUBLIC"){publicIndexes=publicIndexes.includes(mediaIndex)?publicIndexes.filter(i=>i!==mediaIndex):[...publicIndexes,mediaIndex].sort((a,b)=>a-b);if(primary!==null&&!publicIndexes.includes(primary))primary=publicIndexes[0]??null;}
+      else if(mediaAction==="SET_PRIMARY"){if(!publicIndexes.includes(mediaIndex))publicIndexes=[...publicIndexes,mediaIndex].sort((a,b)=>a-b);primary=mediaIndex;}
+      else if(mediaAction==="SET_ALT"){alts={...alts,[String(mediaIndex)]:mediaAlt};}
+      else return send(res,400,{error:"Invalid media action."});
+      const updated=await sql`UPDATE property_listings SET public_photo_indexes=${JSON.stringify(publicIndexes)}::jsonb,primary_photo_index=${primary},photo_alt_texts=${JSON.stringify(alts)}::jsonb,updated_at=NOW() WHERE public_id=${publicId} RETURNING *`;
+      return send(res,200,{ok:true,listing:updated[0]});
+    }
     if (adminPhotos) {
       const current = await sql`SELECT photos FROM property_listings WHERE public_id=${publicId} LIMIT 1`;
       if (!current.length) return send(res,404,{error:"Property not found."});
