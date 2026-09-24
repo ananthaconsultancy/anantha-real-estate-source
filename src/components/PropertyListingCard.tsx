@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, BadgeCheck, CalendarCheck, MapPin, Ruler } from "lucide-react";
+import { ArrowRight, CalendarCheck, MapPin, Ruler } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Property } from "@/data/properties";
 import { propertyFallbackImage } from "@/data/stockImages";
@@ -27,18 +27,6 @@ const PropertyListingCard: React.FC<{ property: Property }> = ({ property }) => 
           className="h-full w-full object-cover transition-transform duration-300"
           loading="lazy"
         />
-        <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-[#15133e]/82 to-transparent">
-          <div className="flex w-full items-center justify-between gap-3">
-            <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-semibold capitalize text-[#2f227f]">
-              {formatStatus(property.status)}
-            </span>
-            {property.verified && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-[#2f227f]">
-                <BadgeCheck size={14} className="text-[#2387ef]" /> Verified by ARE
-              </span>
-            )}
-          </div>
-        </div>
       </div>
 
       <div className="p-6">
