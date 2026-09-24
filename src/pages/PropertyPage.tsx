@@ -66,15 +66,15 @@ const PropertyPage: React.FC = () => {
       <SEO title={property.seoTitle || `${property.name} | ${property.location} | Anantha Real Estate`} description={property.seoDescription || property.shortDescription} path={`/property/${property.slug}`} image={property.image} />
       <Navbar />
       <main>
-        <section className="pt-28 md:pt-32 pb-14 md:pb-18 bg-[radial-gradient(circle_at_80%_15%,rgba(94,177,227,0.22),transparent_28%),linear-gradient(135deg,#fff,#f4f7ff)] border-b border-border">
+        <section className="pt-28 md:pt-32 pb-12 bg-white border-b border-slate-200">
           <div className="container mx-auto px-4">
             <Link to="/properties" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-brand-purple transition-colors mb-7"><ArrowLeft size={16} /> Back to Properties</Link>
             <div className="max-w-5xl">
               <div className="flex flex-wrap gap-2 mb-4">
                 <span className="inline-block px-3 py-1 rounded-full bg-brand-purple text-white text-xs font-semibold uppercase">{statusLabel}</span>
-                {property.verified && <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple text-xs font-semibold"><BadgeCheck size={14} /> Listing details checked</span>}
+                {property.verified && <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple text-xs font-semibold"><BadgeCheck size={14} /> Verified by Anantha Real Estate</span>}
               </div>
-              <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.03] text-foreground mb-5">{property.name}</h1>
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] text-slate-950 mb-5">{property.name}</h1>
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-muted-foreground"><span className="inline-flex items-center gap-2"><MapPin size={18} /> {property.location}, {property.city}</span>{verificationDate && <span className="inline-flex items-center gap-2"><CalendarCheck size={17} /> Checked {verificationDate}</span>}</div>
             </div>
           </div>
@@ -84,35 +84,35 @@ const PropertyPage: React.FC = () => {
           <section className="py-10 bg-white">
             <div className="container mx-auto px-4">
               <div className="grid gap-4 md:grid-cols-2">
-                {property.image && <img src={property.image} alt={property.imageAlt || property.name} className="h-full min-h-80 w-full rounded-3xl object-cover shadow-sm" />}
-                {property.gallery && property.gallery.length > 0 && <div className="grid grid-cols-2 gap-4">{property.gallery.slice(0, 4).map((image) => <img key={image.src} src={image.src} alt={image.alt} className="h-40 md:h-full md:max-h-64 w-full rounded-2xl object-cover shadow-sm" loading="lazy" />)}</div>}
+                {property.image && <img src={property.image} alt={property.imageAlt || property.name} className="h-full min-h-80 w-full rounded-xl object-cover" />}
+                {property.gallery && property.gallery.length > 0 && <div className="grid grid-cols-2 gap-4">{property.gallery.slice(0, 4).map((image) => <img key={image.src} src={image.src} alt={image.alt} className="h-40 md:h-full md:max-h-64 w-full rounded-xl object-cover" loading="lazy" />)}</div>}
               </div>
             </div>
           </section>
         )}
 
-        <section className="py-16 bg-gradient-to-b from-white to-[#f7f9ff]">
+        <section className="py-14 bg-[#fafafa]">
           <div className="container mx-auto px-4">
             <div className="grid lg:grid-cols-[1.5fr_0.85fr] gap-10 lg:gap-12">
               <article>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-                  {facts.map(([label, value, Icon]) => <div key={label} className="rounded-2xl border border-border bg-white p-5 shadow-sm"><span className="text-xs uppercase tracking-[0.14em] font-semibold text-muted-foreground">{label}</span><p className="font-semibold mt-2 inline-flex items-center gap-2">{Icon && <Icon size={16} />}{value}</p></div>)}
-                  {property.projectName && <div className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:col-span-2 lg:col-span-3"><span className="text-xs uppercase tracking-[0.14em] font-semibold text-muted-foreground">Project</span><p className="font-semibold mt-2">{property.projectName}</p></div>}
+                  {facts.map(([label, value, Icon]) => <div key={label} className="rounded-xl border border-slate-200 bg-white p-5"><span className="text-xs uppercase tracking-[0.14em] font-semibold text-muted-foreground">{label}</span><p className="font-semibold mt-2 inline-flex items-center gap-2">{Icon && <Icon size={16} />}{value}</p></div>)}
+                  {property.projectName && <div className="rounded-xl border border-slate-200 bg-white p-5 sm:col-span-2 lg:col-span-3"><span className="text-xs uppercase tracking-[0.14em] font-semibold text-muted-foreground">Project</span><p className="font-semibold mt-2">{property.projectName}</p></div>}
                 </div>
 
-                <div className="rounded-3xl bg-white border border-border p-7 md:p-9 shadow-sm">
+                <div className="rounded-xl bg-white border border-slate-200 p-7 md:p-9">
                   <p className="text-xs uppercase tracking-[0.2em] font-bold text-accent mb-2">Property Overview</p>
                   <h2 className="font-display text-3xl font-bold mb-5">About this property</h2>
                   <p className="text-lg text-muted-foreground leading-relaxed">{property.description}</p>
 
-                  {property.highlights.length > 0 && <><h2 className="font-display text-2xl md:text-3xl font-bold mt-10 mb-5">Property highlights</h2><ul className="grid sm:grid-cols-2 gap-4">{property.highlights.map((highlight) => <li key={highlight} className="rounded-xl bg-[#f7f9ff] border border-border p-4 font-medium">{highlight}</li>)}</ul></>}
-                  {property.amenities && property.amenities.length > 0 && <><h2 className="font-display text-2xl md:text-3xl font-bold mt-10 mb-5">Amenities</h2><ul className="grid sm:grid-cols-2 gap-4">{property.amenities.map((amenity) => <li key={amenity} className="rounded-xl bg-[#f7f9ff] border border-border p-4 font-medium">{amenity}</li>)}</ul></>}
+                  {property.highlights.length > 0 && <><h2 className="font-display text-2xl md:text-3xl font-bold mt-10 mb-5">Property highlights</h2><ul className="grid sm:grid-cols-2 gap-4">{property.highlights.map((highlight) => <li key={highlight} className="rounded-lg bg-slate-50 border border-slate-200 p-4 font-medium">{highlight}</li>)}</ul></>}
+                  {property.amenities && property.amenities.length > 0 && <><h2 className="font-display text-2xl md:text-3xl font-bold mt-10 mb-5">Amenities</h2><ul className="grid sm:grid-cols-2 gap-4">{property.amenities.map((amenity) => <li key={amenity} className="rounded-lg bg-slate-50 border border-slate-200 p-4 font-medium">{amenity}</li>)}</ul></>}
 
                   <div className="mt-10 flex flex-wrap gap-3">{property.sourceRoute && <Button asChild variant="outline"><Link to={property.sourceRoute}>View Project Page</Link></Button>}{property.mapsUrl && <Button asChild variant="outline"><a href={property.mapsUrl} target="_blank" rel="noopener noreferrer"><MapPin size={17} /> View Map</a></Button>}<Button asChild variant="brand"><a href={`tel:${property.enquiryPhone}`} onClick={() => trackEvent("phone_click", eventContext)}><Phone size={17} /> Call Now</a></Button></div>
                 </div>
               </article>
 
-              <aside className="rounded-3xl border border-border bg-white p-6 md:p-7 h-fit lg:sticky lg:top-28 shadow-xl">
+              <aside className="rounded-xl border border-slate-200 bg-white p-6 md:p-7 h-fit lg:sticky lg:top-28">
                 <p className="text-xs uppercase tracking-[0.18em] font-bold text-accent mb-2">Property Enquiry</p>
                 <h2 className="font-display text-2xl md:text-3xl font-bold mb-4">Interested in this property?</h2>
                 <p className="text-muted-foreground mb-6">Reconfirm current availability, pricing and arrange a site visit with Anantha Real Estate.</p>
