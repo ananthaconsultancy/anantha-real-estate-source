@@ -2,7 +2,7 @@ import { createHmac,timingSafeEqual } from "node:crypto";
 const SESSION="__Host-property-admin";const send=(r,s,b)=>{r.statusCode=s;r.setHeader("Cache-Control","no-store");r.setHeader("Content-Type","application/json; charset=utf-8");r.end(JSON.stringify(b))};
 const eq=(a,b)=>{const x=Buffer.from(String(a)),y=Buffer.from(String(b));return x.length===y.length&&timingSafeEqual(x,y)};
 const ck=(r,n)=>(r.headers.cookie||"").split(";").map(s=>s.trim()).find(s=>s.startsWith(n+"="))?.slice(n.length+1);
-const emails=()=>String(process.env.PROPERTY_ADMIN_EMAILS||process.env.GBP_ADMIN_EMAILS||"info@anantharealestate.in").split(",").map(s=>s.trim().toLowerCase()).filter(Boolean);
+const emails=()=>String(process.env.PROPERTY_ADMIN_EMAILS||process.env.GBP_ADMIN_EMAILS||"shashankjanapati@gmail.com").split(",").map(s=>s.trim().toLowerCase()).filter(Boolean);
 const secret=()=>String(process.env.PROPERTY_ADMIN_SESSION_SECRET||process.env.PROPERTY_GOOGLE_CLIENT_SECRET||process.env.GBP_GOOGLE_CLIENT_SECRET||"");
 const origin=()=>String(process.env.PROPERTY_ADMIN_ORIGIN||process.env.GBP_APP_ORIGIN||"https://www.anantharealestate.in").replace(/\/$/,"");
 function auth(r){const t=ck(r,SESSION),s=secret();if(!t||s.length<16)return null;const [b,g]=String(t).split(".");if(!b||!g||!eq(g,createHmac("sha256",s).update(b).digest("base64url")))return null;try{const x=JSON.parse(Buffer.from(b,"base64url").toString("utf8"));return x?.email&&x?.csrf&&x?.exp>Date.now()&&emails().includes(String(x.email).toLowerCase())?x:null}catch{return null}}
