@@ -19,7 +19,7 @@ export default async function handler(req,res){
   const ext={"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/avif":"avif"}[match[1]]||"jpg";
   const base=slugify(altText||fileName||"property-photo");
   const pathname=`property-images/${slugify(publicId)}/${base}-${Date.now()}.${ext}`;
-  const blob=await put(pathname,buffer,{access:"public",contentType:match[1],addRandomSuffix:false});
-  return send(res,201,{ok:true,url:blob.url,pathname:blob.pathname});
+  const blob=await put(pathname,buffer,{access:"private",contentType:match[1],addRandomSuffix:false});
+  return send(res,201,{ok:true,url:`/api/property-image?path=${encodeURIComponent(blob.pathname)}`,pathname:blob.pathname});
  }catch(e){console.error("property-media upload",e);return send(res,500,{error:"Could not upload property image."});}
 }
