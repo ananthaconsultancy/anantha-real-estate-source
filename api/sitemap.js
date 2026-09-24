@@ -12,7 +12,7 @@ const staticRoutes = [
 ];
 
 const esc = (v="") => String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");
-const date = (v) => { const d = v ? new Date(v) : new Date(); return Number.isNaN(d.getTime()) ? new Date().toISOString().slice(0,10) : d.toISOString().slice(0,10); };\nconst slugify=(v)=>String(v||"").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");\nconst seoSlug=(r)=>{const p=r.property_type==="Flat"&&r.bedrooms?r.bedrooms+"-bhk-flat":r.property_type==="House"&&r.bedrooms?r.bedrooms+"-bhk-house":r.property_type;return slugify(p+"-"+r.location+"-nellore");};
+const date = (v) => { const d = v ? new Date(v) : new Date(); return Number.isNaN(d.getTime()) ? new Date().toISOString().slice(0,10) : d.toISOString().slice(0,10); };\nconst slugify=(v)=>String(v||"").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");\nconst seoSlug=(r)=>{const p=r.property_type==="Flat"&&r.bedrooms?String(r.bedrooms)+"-bhk-flat":r.property_type==="House"&&r.bedrooms?String(r.bedrooms)+"-bhk-house":String(r.property_type||"property");return slugify(p+"-"+r.location+"-nellore");};
 
 export default async function handler(req,res){
   if(req.method!=="GET"){res.statusCode=405;res.setHeader("Allow","GET");return res.end("Method not allowed");}
