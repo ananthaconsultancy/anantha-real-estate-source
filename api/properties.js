@@ -14,7 +14,18 @@ function publicListing(row){
   const condition=row.property_age||undefined;
   const detailBits=[row.bedrooms&&`${row.bedrooms} bedroom${Number(row.bedrooms)===1?"":"s"}`,row.area&&`${row.area} ${row.area_unit||""}`,row.facing&&`${row.facing}-facing`,condition&&condition].filter(Boolean);
   const title=row.property_type==="Flat"?`${row.bedrooms?`${row.bedrooms} BHK `:""}Flat in ${row.location}`:`${row.property_type} in ${row.location}`;
-  const overview=detailBits.length?`${title} with ${detailBits.join(", ")}. ${row.apartment_name?`Located in ${row.apartment_name}. `:""}${row.parking?`Parking: ${row.parking}. `:""}Contact Anantha Real Estate to reconfirm availability, documents and arrange a site visit.`:`Verified ${row.property_type.toLowerCase()} opportunity in ${row.location}. Contact Anantha Real Estate for current availability and a site visit.`;
+  const cleanNote=String(row.notes||"").replace(/\s+/g," ").trim();
+  const noteLower=cleanNote.toLowerCase();
+  const signals=[];
+  if(/ready|immediate|move.?in/.test(noteLower))signals.push("Suitable for buyers looking for near-term possession");
+  if(/new|brand.?new|unused/.test(noteLower)||/new/i.test(String(row.property_age||"")))signals.push("Presented as a newer property");
+  if(/corner/.test(noteLower))signals.push("Corner-position detail mentioned by the owner");
+  if(/lift|elevator/.test(noteLower))signals.push("Lift access mentioned");
+  if(/parking/.test(noteLower)||row.parking)signals.push(row.parking?`Parking: ${row.parking}`:"Parking mentioned");
+  if(/gated|security/.test(noteLower))signals.push("Community/security feature mentioned");
+  if(/balcony/.test(noteLower))signals.push("Balcony feature mentioned");
+  const overviewParts=[`${title}${row.apartment_name?` in ${row.apartment_name}`:""}.`,row.area?`The property offers ${row.area} ${row.area_unit||""}${row.bedrooms?` with ${row.bedrooms} bedroom${Number(row.bedrooms)===1?"":"s"}`:""}.`:"",row.facing?`${row.facing}-facing configuration.`:"",row.property_age?`Property condition/age: ${row.property_age}.`:"",row.parking?`Parking: ${row.parking}.`:""].filter(Boolean);
+  const overview=overviewParts.join(" ");
   return {
     slug,
     publicId:row.public_id,
@@ -34,7 +45,9 @@ function publicListing(row){
     facing:row.facing||undefined,
     shortDescription:detailBits.join(" · "),
     description:overview,
-    highlights:[row.apartment_name&&`Apartment: ${row.apartment_name}`,row.property_age&&`Condition: ${row.property_age}`,row.floors&&`Floors: ${row.floors}`,row.constructed_area&&`Constructed area: ${row.constructed_area}`,row.parking&&`Parking: ${row.parking}`,row.godown_plot_type&&`Classification: ${row.godown_plot_type}`,row.per_unit_valuation&&`Indicative rate: ${row.per_unit_valuation} per ${row.area_unit||"unit"}`,row.notes&&`Additional details: ${row.notes}`].filter(Boolean),
+    highlights:[row.apartment_name&&`Apartment: ${row.apartment_name}`,row.property_age&&`Condition: ${row.property_age}`,row.floors&&`Floors: ${row.floors}`,row.constructed_area&&`Built-up area: ${row.constructed_area}`,row.parking&&`Parking: ${row.parking}`,row.godown_plot_type&&`Property classification: ${row.godown_plot_type}`,row.per_unit_valuation&&`Indicative rate: ${row.per_unit_valuation} per ${row.area_unit||"unit"}`].filter(Boolean),
+    insightSignals:signals.slice(0,4),
+    ownerNote:cleanNote||undefined,
     enquiryPhone:"+916302966604",
     whatsappPhone:"+916302966604",
     image:primaryPhoto?.src,
