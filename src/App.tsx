@@ -4,6 +4,7 @@ const PropertyAdmin = lazy(() => import("./pages/PropertyAdmin"));
 const EnquiryAdmin = lazy(() => import("./pages/EnquiryAdmin"));
 const DealAdmin = lazy(() => import("./pages/DealAdmin"));
 const OperationsAdmin = lazy(() => import("./pages/OperationsAdmin"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -30,6 +31,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const adminPath = window.location.pathname.replace(/\/$/, "");
+  if (adminPath === "/admin/login") { return <Suspense fallback={<p>Loading login…</p>}><AdminLogin /></Suspense>; }
   if (adminPath === "/admin/gbp") {
     return (
       <Suspense fallback={<p>Loading admin…</p>}>
