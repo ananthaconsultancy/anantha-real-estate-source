@@ -1,5 +1,5 @@
 const JSON_HEADERS = { "Content-Type": "application/json; charset=utf-8" };
-const send=(res,status,body)=>{res.statusCode=status;res.setHeader("Cache-Control","public, max-age=60, s-maxage=300, stale-while-revalidate=600");Object.entries(JSON_HEADERS).forEach(([k,v])=>res.setHeader(k,v));res.end(JSON.stringify(body));};
+const send=(res,status,body)=>{res.statusCode=status;res.setHeader("Cache-Control","public, max-age=0, s-maxage=30, stale-while-revalidate=60");Object.entries(JSON_HEADERS).forEach(([k,v])=>res.setHeader(k,v));res.end(JSON.stringify(body));};
 async function getSql(){const url=process.env.ANANTHA_DATABASE_URL||process.env.POSTGRES_URL||process.env.DATABASE_URL;if(!url)return null;const {neon}=await import("@neondatabase/serverless");return neon(url);}
 const typeMap={Plot:"plots",Flat:"apartments",House:"villas",Godown:"commercial",Other:"land"};
 function publicListing(row){
@@ -40,10 +40,12 @@ export default async function handler(req,res){
   try{
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS publish_status TEXT NOT NULL DEFAULT 'DRAFT'`;
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS published_at TIMESTAMPTZ`;
+    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS verified_at TIMESTAMPTZ`;
+    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS availability_status TEXT NOT NULL DEFAULT 'AVAILABLE'`;
     const id=String(req.query?.id||"").trim().toUpperCase();
     const rows=id
-      ? await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,published_at,updated_at FROM property_listings WHERE public_id=${id} AND verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' LIMIT 1`
-      : await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,updated_at FROM property_listings WHERE verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' ORDER BY verified_at DESC NULLS LAST,updated_at DESC LIMIT 250`;
+      ? await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,published_at,updated_at FROM property_listings WHERE public_id=${id} AND verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' AND availability_status='AVAILABLE' LIMIT 1`
+      : await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,bedrooms,property_age,floors,constructed_area,parking,godown_plot_type,photos,verified_at,updated_at FROM property_listings WHERE verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' AND availability_status='AVAILABLE' ORDER BY verified_at DESC NULLS LAST,updated_at DESC LIMIT 250`;
     const listings=rows.map(publicListing);
     if(id&&!listings.length)return send(res,404,{error:"Property not found."});
     return send(res,200,id?{listing:listings[0]}:{listings});
