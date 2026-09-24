@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, BadgeCheck, CalendarCheck, MapPin, MessageCircle, Phone, Ruler } from "lucide-react";
+import { ArrowLeft, BadgeCheck, CalendarCheck, Check, MapPin, MessageCircle, Phone, Ruler, Sparkles } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -52,6 +52,7 @@ const PropertyPage: React.FC = () => {
     } catch(err){setEnquiryState({busy:false,message:err instanceof Error?err.message:"Could not submit enquiry.",error:true});}
   }
 
+  const insights = (property.insightSignals || []) as string[];
   const facts = [
     property.area ? ["Area", property.area, Ruler] : null,
     property.priceLabel ? ["Price", property.priceLabel, null] : null,
@@ -101,11 +102,13 @@ const PropertyPage: React.FC = () => {
                 </div>
 
                 <div className="rounded-xl bg-white border border-slate-200 p-7 md:p-9">
-                  <p className="text-xs uppercase tracking-[0.2em] font-bold text-accent mb-2">Property Overview</p>
-                  <h2 className="font-display text-3xl font-bold mb-5">About this property</h2>
-                  <p className="text-lg text-muted-foreground leading-relaxed">{property.description}</p>
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] font-bold text-brand-purple mb-3"><Sparkles size={15}/> ARE Property Summary</div>
+                  <h2 className="font-display text-3xl font-semibold tracking-tight mb-4">The essentials, simplified.</h2>
+                  <p className="text-base md:text-lg text-slate-600 leading-8 max-w-3xl">{property.description}</p>
 
-                  {property.highlights.length > 0 && <><h2 className="font-display text-2xl md:text-3xl font-bold mt-10 mb-5">Property highlights</h2><ul className="grid sm:grid-cols-2 gap-4">{property.highlights.map((highlight) => <li key={highlight} className="rounded-lg bg-slate-50 border border-slate-200 p-4 font-medium">{highlight}</li>)}</ul></>}
+                  {insights.length > 0 && <div className="mt-8 rounded-xl bg-slate-950 p-6 text-white"><p className="text-xs uppercase tracking-[0.18em] text-white/60 font-semibold">Useful signals from the submitted information</p><div className="mt-4 grid sm:grid-cols-2 gap-x-6 gap-y-3">{insights.map((x)=><div key={x} className="flex gap-3 text-sm leading-6"><Check size={17} className="mt-0.5 shrink-0"/><span>{x}</span></div>)}</div></div>}
+
+                  {property.highlights.length > 0 && <><h2 className="font-display text-2xl font-semibold tracking-tight mt-10 mb-5">At a glance</h2><div className="divide-y border-y border-slate-200">{property.highlights.map((highlight) => {const parts=highlight.split(":");return <div key={highlight} className="grid grid-cols-[0.8fr_1.2fr] gap-4 py-4 text-sm"><span className="text-slate-500">{parts.length>1?parts.shift():"Detail"}</span><span className="font-medium text-slate-900">{parts.length?parts.join(":").trim():highlight}</span></div>})}</div></>}
                   {property.amenities && property.amenities.length > 0 && <><h2 className="font-display text-2xl md:text-3xl font-bold mt-10 mb-5">Amenities</h2><ul className="grid sm:grid-cols-2 gap-4">{property.amenities.map((amenity) => <li key={amenity} className="rounded-lg bg-slate-50 border border-slate-200 p-4 font-medium">{amenity}</li>)}</ul></>}
 
                   <div className="mt-10 flex flex-wrap gap-3">{property.sourceRoute && <Button asChild variant="outline"><Link to={property.sourceRoute}>View Project Page</Link></Button>}{property.mapsUrl && <Button asChild variant="outline"><a href={property.mapsUrl} target="_blank" rel="noopener noreferrer"><MapPin size={17} /> View Map</a></Button>}<Button asChild variant="brand"><a href={`tel:${property.enquiryPhone}`} onClick={() => trackEvent("phone_click", eventContext)}><Phone size={17} /> Call Now</a></Button></div>
