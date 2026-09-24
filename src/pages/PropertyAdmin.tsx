@@ -53,6 +53,7 @@ export default function PropertyAdmin() {
   const [selected, setSelected] = useState<Listing | null>(null);
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
+  const [adminPhotos, setAdminPhotos] = useState<string[]>([]);
 
   async function load() {
     setLoading(true);
@@ -99,6 +100,10 @@ export default function PropertyAdmin() {
   const filtered = useMemo(() => listings.filter((l) => (l.verification_status || "PENDING") === filter), [listings, filter]);
   const counts = useMemo(() => Object.fromEntries(statusOptions.map((s) => [s.value, listings.filter((l) => (l.verification_status || "PENDING") === s.value).length])), [listings]);
 
+  async function addPhotos() { if (!selected || !adminPhotos.length) return; setBusy(true); setError(""); try { const r=await fetch("/api/property-admin",{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-Token":csrf},body:JSON.stringify({publicId:selected.public_id,adminPhotos})}); const data=await r.json(); if(!r.ok)throw new Error(data.error||"Could not add photos."); setAdminPhotos([]); await load(); setSelected((s)=>s?{...s,photos:data.listing?.photos||s.photos}:s); } catch(e){setError(e instanceof Error?e.message:"Could not add photos.");} finally{setBusy(false);} }
+
+  function choosePhotos(files: FileList | null) { if (!files) return; const remaining=Math.max(0,5-photosFrom(selected?.photos).length); const chosen=Array.from(files).slice(0,remaining); Promise.all(chosen.map(file=>new Promise<string>((resolve,reject)=>{if(!file.type.startsWith("image/")||file.size>650000)return reject(new Error("Each image must be under 650 KB."));const r=new FileReader();r.onload=()=>resolve(String(r.result));r.onerror=()=>reject(new Error("Could not read image."));r.readAsDataURL(file)}))).then(x=>setAdminPhotos(x)).catch(e=>setError(e.message)); }
+
   async function updateAvailability(availabilityStatus: string) {
     if (!selected) return; setBusy(true); setError("");
     try { const r=await fetch("/api/property-admin",{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-Token":csrf},body:JSON.stringify({publicId:selected.public_id,availabilityStatus,adminNotes:notes})});const data=await r.json();if(!r.ok)throw new Error(data.error||"Could not update availability.");setSelected(null);await load();} catch(e){setError(e instanceof Error?e.message:"Could not update availability.");} finally{setBusy(false);}
@@ -140,17 +145,17 @@ export default function PropertyAdmin() {
     return (
       <main className="min-h-screen bg-[#f7f9ff] grid place-items-center px-4">
         <Helmet>
-          <title>Property Admin SSO | Anantha Real Estate</title>
+          <title>Property Admin | Anantha Real Estate</title>
           <meta name="robots" content="noindex,nofollow" />
           <meta name="referrer" content="no-referrer" />
         </Helmet>
         <div className="w-full max-w-md rounded-3xl border bg-white p-7 md:p-9 shadow-xl">
           <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#f0efff] text-[#605e8a]"><LockKeyhole size={22}/></div>
           <p className="mt-6 text-sm font-semibold text-[#605e8a]">Anantha Real Estate</p>
-          <h1 className="mt-2 text-3xl font-bold">Admin SSO Login</h1>
-          <p className="mt-3 text-sm leading-relaxed text-slate-500">Use an approved Anantha administrator Google account to securely access property verification.</p>
+          <h1 className="mt-2 text-3xl font-bold">Admin Login</h1>
+          <p className="mt-3 text-sm leading-relaxed text-slate-500">Sign in to securely access property verification.</p>
           {error && <div className="mt-5 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{error}</div>}
-          <a href="/admin/login" className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#605e8a] to-[#5eb1e3] px-5 py-3 font-semibold text-white shadow-lg">Continue with Google</a>
+          <a href="/admin/login" className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#605e8a] to-[#5eb1e3] px-5 py-3 font-semibold text-white shadow-lg">Go to Admin Login</a>
           <p className="mt-4 text-center text-xs leading-relaxed text-slate-500">Only administrator emails approved for Anantha can open this dashboard.</p>
           <a href="/" className="mt-6 block text-center text-sm font-semibold text-slate-500 hover:text-[#605e8a]">Back to website</a>
         </div>
@@ -218,7 +223,7 @@ export default function PropertyAdmin() {
 
                   {photosFrom(selected.photos).length > 0 && <div className="mt-6"><h3 className="font-bold mb-3">Uploaded Photos</h3><div className="grid grid-cols-2 md:grid-cols-3 gap-3">{photosFrom(selected.photos).map((src, i) => <a key={i} href={src} target="_blank" rel="noreferrer"><img src={src} alt={`Property ${i + 1}`} className="w-full aspect-square object-cover rounded-xl border"/></a>)}</div></div>}
 
-                  <label className="grid gap-2 mt-6 text-sm font-semibold">Admin notes<textarea rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} className="rounded-xl border p-3 font-normal" placeholder="Verification notes, missing documents, correction required…"/></label>
+                  <div className="mt-6 rounded-2xl border p-4"><h3 className="font-bold">Admin Property Photos</h3><p className="mt-1 text-xs text-slate-500">Add photos while reviewing. Maximum 5 photos total; each under 650 KB.</p><input type="file" accept="image/*" multiple onChange={(e)=>choosePhotos(e.target.files)} className="mt-4 block w-full text-sm"/>{adminPhotos.length>0&&<div className="mt-3 grid grid-cols-3 gap-2">{adminPhotos.map((src,i)=><img key={i} src={src} alt={`New property photo ${i+1}`} className="aspect-square w-full rounded-lg border object-cover"/>)}</div>}<button disabled={busy||!adminPhotos.length} onClick={()=>void addPhotos()} className="mt-4 rounded-xl bg-[#605e8a] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">Add Photos</button></div>\n\n                  <label className="grid gap-2 mt-6 text-sm font-semibold">Admin notes<textarea rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} className="rounded-xl border p-3 font-normal" placeholder="Verification notes, missing documents, correction required…"/></label>
 
                   <div className="mt-6 rounded-2xl border bg-white p-4"><div className="flex items-center justify-between"><div><p className="font-bold">Availability</p><p className="text-xs text-slate-500">Sold and withdrawn properties are automatically unpublished.</p></div><span className="rounded-full border px-3 py-1 text-xs font-semibold">{selected.availability_status || "AVAILABLE"}</span></div><div className="grid grid-cols-2 gap-2 mt-4">{["AVAILABLE","HOLD","SOLD","WITHDRAWN"].map(x=><button key={x} disabled={busy} onClick={()=>void updateAvailability(x)} className="rounded-xl border px-3 py-2 text-sm font-semibold">{x}</button>)}</div></div>
                   {selected.verification_status === "APPROVED" && <div className="mt-6 rounded-2xl border bg-[#f7f9ff] p-4"><div className="flex items-center justify-between gap-3"><div><p className="font-bold">Public listing</p><p className="text-xs text-slate-500 mt-1">Verification and publication are separate. Publish only after public details are ready.</p></div><span className="rounded-full bg-white border px-3 py-1 text-xs font-semibold">{selected.publish_status || "DRAFT"}</span></div><div className="grid sm:grid-cols-2 gap-3 mt-4">{selected.publish_status === "PUBLISHED" ? <button disabled={busy} onClick={() => void updatePublication("UNPUBLISHED")} className="rounded-xl border px-4 py-3 font-semibold">Unpublish</button> : <button disabled={busy} onClick={() => void updatePublication("PUBLISHED")} className="rounded-xl bg-[#605e8a] text-white px-4 py-3 font-semibold">Publish to Website</button>}<button disabled={busy} onClick={() => void updatePublication("DRAFT")} className="rounded-xl border px-4 py-3 font-semibold">Keep as Draft</button></div></div>}
