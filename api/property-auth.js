@@ -24,7 +24,7 @@ function config() {
   const clientId = String(process.env.PROPERTY_GOOGLE_CLIENT_ID || process.env.GBP_GOOGLE_CLIENT_ID || "").trim();
   const clientSecret = String(process.env.PROPERTY_GOOGLE_CLIENT_SECRET || process.env.GBP_GOOGLE_CLIENT_SECRET || "").trim();
   const origin = String(process.env.PROPERTY_ADMIN_ORIGIN || process.env.GBP_APP_ORIGIN || "https://www.anantharealestate.in").replace(/\/$/, "");
-  const emails = String(process.env.PROPERTY_ADMIN_EMAILS || process.env.GBP_ADMIN_EMAILS || "info@anantharealestate.in")
+  const emails = String(process.env.PROPERTY_ADMIN_EMAILS || process.env.GBP_ADMIN_EMAILS || "shashankjanapati@gmail.com")
     .split(",")
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
