@@ -26,25 +26,25 @@ const ProjectPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#fafafa]">
       <SEO title={project.seoTitle} description={project.seoDescription} path={`/project/${project.slug}`} />
       <Navbar />
       <main id="overview">
-        <section className="pt-28 md:pt-32 pb-16 md:pb-20 bg-[radial-gradient(circle_at_80%_10%,rgba(94,177,227,0.2),transparent_30%),linear-gradient(135deg,#fff,#f5f7ff)] border-b border-border">
+        <section className="border-b border-slate-200 bg-white pb-16 pt-28 md:pb-20 md:pt-32">
           <div className="container mx-auto px-4">
-            <Link to="/projects" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-brand-purple transition-colors mb-8"><ArrowLeft size={16} /> Back to Projects</Link>
+            <Link to="/projects" className="mb-8 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-950 transition-colors"><ArrowLeft size={16} /> Back to Projects</Link>
             <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 items-end">
               <div>
-                <span className="inline-flex px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple text-xs font-semibold">{project.status}</span>
-                <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mt-5 mb-4 leading-[1.02]">{project.name}</h1>
+                <span className="inline-flex border border-slate-300 px-3 py-1 text-xs font-semibold">{project.status}</span>
+                <h1 className="mt-5 mb-4 font-display text-4xl font-semibold leading-[1.02] text-slate-950 md:text-6xl lg:text-7xl">{project.name}</h1>
                 <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{project.description}</p>
               </div>
-              <aside className="rounded-2xl border border-border bg-white p-6 shadow-xl">
+              <aside className="border border-slate-200 bg-[#f4f4f2] p-6">
                 <p className="text-xs uppercase tracking-[0.18em] font-bold text-accent mb-2">Project Profile</p>
                 <h2 className="font-display text-2xl font-bold mb-5">{project.companyName}</h2>
                 <div className="grid gap-4 text-sm">
-                  <div className="rounded-xl bg-[#f7f9ff] p-4"><span className="text-muted-foreground block mb-1">Project Type</span><span className="font-semibold">{project.projectType}</span></div>
-                  <div className="rounded-xl bg-[#f7f9ff] p-4"><span className="text-muted-foreground block mb-1">Location</span><span className="font-semibold inline-flex items-center gap-2"><MapPin size={16} /> {project.location}</span></div>
+                  <div className="border-t border-slate-300 py-4"><span className="text-muted-foreground block mb-1">Project Type</span><span className="font-semibold">{project.projectType}</span></div>
+                  <div className="border-t border-slate-300 py-4"><span className="text-muted-foreground block mb-1">Location</span><span className="font-semibold inline-flex items-center gap-2"><MapPin size={16} /> {project.location}</span></div>
                 </div>
                 <div className="flex flex-col gap-3 mt-6"><Button variant="brand" asChild><a href="https://calendly.com/jvk-aconsultancy/30min" target="_blank" rel="noopener noreferrer">Book Consultation <ArrowRight size={18} /></a></Button>{project.phone && <Button variant="outline" asChild><a href={`tel:${project.phone.replace(/\s+/g, "")}`}><Phone size={17} /> {project.phone}</a></Button>}</div>
               </aside>
@@ -60,9 +60,9 @@ const ProjectPage = () => {
           </div>
         </nav>
 
-        <section className="py-12 bg-white">
+        <section className="border-b border-slate-200 bg-white py-12">
           <div className="container mx-auto px-4">
-            {project.slug === "motherland-green-meadows" ? <div className="space-y-5"><div className="relative aspect-[16/8] rounded-3xl overflow-hidden"><img src="/projects/motherland/green-meadows/aerial-01.jpg" alt="Green Meadows aerial view" className="w-full h-full object-cover"/><div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"/><h2 className="absolute bottom-7 left-7 text-white font-display text-3xl md:text-5xl font-bold">Green Meadows · Brahmadevam</h2></div><div className="grid grid-cols-2 md:grid-cols-3 gap-4">{["aerial-02.jpg","aerial-03.jpg","development.jpg"].map((file,i)=><img key={file} src={`/projects/motherland/green-meadows/${file}`} alt={`Green Meadows project view ${i+2}`} loading="lazy" className="w-full h-52 md:h-64 object-cover rounded-2xl"/>)}</div><div className="pt-5"><p className="text-xs uppercase tracking-[0.22em] font-bold text-[#6044b8] mb-3">Project Video</p><video controls playsInline preload="metadata" poster="/projects/motherland/green-meadows/aerial-01.jpg" className="w-full rounded-3xl bg-black"><source src="/projects/motherland/green-meadows/project-video.mp4" type="video/mp4"/></video></div></div> : <div className="aspect-[16/7] md:aspect-[16/6] rounded-3xl bg-gradient-to-br from-[#eef4ff] to-[#e9e8ff] flex items-center justify-center overflow-hidden relative shadow-sm border border-border"><Building2 className="w-24 h-24 text-brand-purple/30" aria-hidden="true"/></div>}
+            {project.slug === "motherland-green-meadows" ? <div className="space-y-5"><div className="relative aspect-[16/8] overflow-hidden"><img src="/projects/motherland/green-meadows/aerial-01.jpg" alt="Green Meadows aerial view" className="w-full h-full object-cover"/><div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"/><h2 className="absolute bottom-7 left-7 text-white font-display text-3xl md:text-5xl font-bold">Green Meadows · Brahmadevam</h2></div><div className="grid grid-cols-2 md:grid-cols-3 gap-4">{["aerial-02.jpg","aerial-03.jpg","development.jpg"].map((file,i)=><img key={file} src={`/projects/motherland/green-meadows/${file}`} alt={`Green Meadows project view ${i+2}`} loading="lazy" className="w-full h-52 md:h-64 object-cover"/>)}</div><div className="pt-5"><p className="text-xs uppercase tracking-[0.22em] font-bold text-slate-500 mb-3">Project Video</p><video controls playsInline preload="metadata" poster="/projects/motherland/green-meadows/aerial-01.jpg" className="w-full bg-black"><source src="/projects/motherland/green-meadows/project-video.mp4" type="video/mp4"/></video></div></div> : <div className="aspect-[16/7] md:aspect-[16/6] bg-slate-100 flex items-center justify-center overflow-hidden relative border border-slate-200"><Building2 className="w-24 h-24 text-slate-400" aria-hidden="true"/></div>}
           </div>
         </section>
 

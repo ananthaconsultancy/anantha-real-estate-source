@@ -121,54 +121,53 @@ const HomePageV2 = () => {
       <Navbar />
 
       <main className="pt-[76px]">
-        <section className="relative min-h-[620px] md:min-h-[680px] overflow-hidden bg-[#111737]">
+        <section className="relative min-h-[620px] overflow-hidden border-b border-slate-200 bg-white md:min-h-[680px]">
           {slides.map((slide, index) => (
             <div
               key={slide.title}
               className={`absolute inset-0 transition-opacity duration-1000 ${index === activeSlide ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             >
               <img src={slide.image} alt={slide.alt} className="h-full w-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#111737]/95 via-[#24146f]/76 to-[#1d76d8]/24" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_20%,rgba(94,177,227,0.28),transparent_28%)]" />
+              <div className="absolute inset-0 bg-gradient-to-r from-white via-white/88 to-white/10" />
             </div>
           ))}
 
           <div className="container relative z-20 mx-auto px-4 min-h-[620px] md:min-h-[680px] flex items-center">
-            <div className="max-w-3xl py-16 md:py-20 text-white">
-              <p className="text-[11px] md:text-xs font-bold uppercase tracking-[0.28em] text-[#9bd8ff]">{current.eyebrow}</p>
-              <h1 className="mt-5 text-[48px] sm:text-[64px] lg:text-[78px] leading-[0.98] font-black tracking-[-0.045em] max-w-3xl">{current.title}</h1>
-              <p className="mt-6 max-w-2xl text-base md:text-lg leading-7 text-white/78">{current.description}</p>
+            <div className="max-w-3xl py-16 md:py-20 text-slate-950">
+              <p className="text-[11px] md:text-xs font-bold uppercase tracking-[0.28em] text-slate-500">{current.eyebrow}</p>
+              <h1 className="mt-5 font-display text-[48px] sm:text-[64px] lg:text-[78px] leading-[0.98] font-semibold tracking-[-0.045em] max-w-3xl">{current.title}</h1>
+              <p className="mt-6 max-w-2xl text-base md:text-lg leading-7 text-slate-600">{current.description}</p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link to={current.primaryHref} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#5eb1e3] to-[#6e4fd2] px-6 py-3.5 text-sm font-bold text-white shadow-xl transition-transform hover:-translate-y-0.5">
+                <Link to={current.primaryHref} className="inline-flex items-center gap-2 bg-slate-950 px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-slate-700">
                   {current.primaryLabel} <ArrowRight size={17} />
                 </Link>
-                <Link to={current.secondaryHref} className="inline-flex items-center gap-2 rounded-xl border border-white/35 bg-white/10 backdrop-blur px-6 py-3.5 text-sm font-bold text-white hover:bg-white/15">
+                <Link to={current.secondaryHref} className="inline-flex items-center gap-2 border border-slate-950 bg-white px-6 py-3.5 text-sm font-bold text-slate-950 hover:bg-slate-100">
                   {current.secondaryLabel}
                 </Link>
               </div>
             </div>
           </div>
 
-          <button aria-label="Previous hero slide" onClick={() => setActiveSlide((activeSlide - 1 + slides.length) % slides.length)} className="absolute left-4 md:left-8 top-1/2 z-30 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full border border-white/25 bg-black/20 text-white backdrop-blur hover:bg-black/30"><ArrowLeft size={20} /></button>
-          <button aria-label="Next hero slide" onClick={() => setActiveSlide((activeSlide + 1) % slides.length)} className="absolute right-4 md:right-8 top-1/2 z-30 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full border border-white/25 bg-black/20 text-white backdrop-blur hover:bg-black/30"><ArrowRight size={20} /></button>
+          <button aria-label="Previous hero slide" onClick={() => setActiveSlide((activeSlide - 1 + slides.length) % slides.length)} className="absolute left-4 md:left-8 top-1/2 z-30 -translate-y-1/2 grid h-11 w-11 place-items-center border border-slate-300 bg-white/90 text-slate-950 hover:bg-white"><ArrowLeft size={20} /></button>
+          <button aria-label="Next hero slide" onClick={() => setActiveSlide((activeSlide + 1) % slides.length)} className="absolute right-4 md:right-8 top-1/2 z-30 -translate-y-1/2 grid h-11 w-11 place-items-center border border-slate-300 bg-white/90 text-slate-950 hover:bg-white"><ArrowRight size={20} /></button>
 
           <div className="absolute bottom-7 left-1/2 z-30 -translate-x-1/2 flex gap-2">
             {slides.map((slide, index) => (
-              <button key={slide.title} aria-label={`Go to slide ${index + 1}`} onClick={() => setActiveSlide(index)} className={`h-2 rounded-full transition-all ${index === activeSlide ? "w-9 bg-white" : "w-2 bg-white/45"}`} />
+              <button key={slide.title} aria-label={`Go to slide ${index + 1}`} onClick={() => setActiveSlide(index)} className={`h-1.5 transition-all ${index === activeSlide ? "w-9 bg-slate-950" : "w-2 bg-slate-400"}`} />
             ))}
           </div>
         </section>
 
         <section className="relative z-30 -mt-7 px-4">
-          <div className="container mx-auto rounded-2xl bg-white p-4 sm:p-5 shadow-[0_18px_55px_rgba(23,40,95,0.15)] border border-[#e8ecfb]">
+          <div className="container mx-auto bg-white p-4 sm:p-5 shadow-[0_18px_40px_rgba(15,23,42,0.12)] border border-slate-200">
             <div className="flex flex-wrap gap-2 pb-4">
-              <Link to="/properties" className="rounded-lg bg-gradient-to-r from-[#4320a8] to-[#2387ef] px-5 py-2 text-xs font-bold text-white">All</Link>
-              {propertyCategories.map((category) => <Link key={category.slug} to={`/properties/${category.slug}`} className="rounded-lg px-4 py-2 text-xs font-bold text-slate-700 hover:bg-[#f2f4ff]">{category.name.replace(" for Sale", "")}</Link>)}
+              <Link to="/properties" className="bg-slate-950 px-5 py-2 text-xs font-bold text-white">All</Link>
+              {propertyCategories.map((category) => <Link key={category.slug} to={`/properties/${category.slug}`} className="px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100">{category.name.replace(" for Sale", "")}</Link>)}
             </div>
             <div className="grid md:grid-cols-[1fr_1fr_auto] gap-3">
-              <Link to="/properties" className="flex items-center justify-between rounded-xl border border-[#e2e7f5] bg-white px-4 py-3.5"><span><span className="block text-[11px] text-slate-400">Property Type</span><span className="text-sm font-semibold text-slate-700">Browse all property types</span></span><Home size={19} className="text-[#4d31b0]" /></Link>
-              <Link to="/projects" className="flex items-center justify-between rounded-xl border border-[#e2e7f5] bg-white px-4 py-3.5"><span><span className="block text-[11px] text-slate-400">Projects</span><span className="text-sm font-semibold text-slate-700">Explore represented projects</span></span><Building2 size={19} className="text-[#4d31b0]" /></Link>
-              <Link to="/properties" className="inline-flex min-w-[150px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#4320a8] to-[#2387ef] px-7 py-3 text-sm font-bold text-white"><Search size={18} /> Search</Link>
+              <Link to="/properties" className="flex items-center justify-between border border-slate-300 bg-white px-4 py-3.5"><span><span className="block text-[11px] text-slate-400">Property Type</span><span className="text-sm font-semibold text-slate-700">Browse all property types</span></span><Home size={19} className="text-slate-950" /></Link>
+              <Link to="/projects" className="flex items-center justify-between border border-slate-300 bg-white px-4 py-3.5"><span><span className="block text-[11px] text-slate-400">Projects</span><span className="text-sm font-semibold text-slate-700">Explore represented projects</span></span><Building2 size={19} className="text-slate-950" /></Link>
+              <Link to="/properties" className="inline-flex min-w-[150px] items-center justify-center gap-2 bg-slate-950 px-7 py-3 text-sm font-bold text-white"><Search size={18} /> Search</Link>
             </div>
           </div>
         </section>
