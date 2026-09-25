@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -7,7 +8,10 @@ import { Button } from "@/components/ui/button";
 import { projects } from "@/data/projects";
 import PremiumCTA from "@/components/PremiumCTA";
 
+const categories = ["All Projects", "Plots", "Townships", "Commercial"] as const;
 const ProjectsPage = () => {
+  const [category, setCategory] = useState<typeof categories[number]>("All Projects");
+  const filteredProjects = projects.filter(project => category === "All Projects" || project.categories.includes(category));
   return (
     <div className="min-h-screen bg-[#f7f5f0]">
       <SEO title="Real Estate Projects in Nellore | Anantha Real Estate" description="Explore premium residential, plotted and township projects represented by Anantha Real Estate across Nellore." path="/projects" />
@@ -25,10 +29,9 @@ const ProjectsPage = () => {
         <section className="py-8 bg-white border-b border-black/5">
           <div className="container mx-auto px-4 flex flex-wrap gap-3 items-center">
             <span className="text-sm font-semibold mr-3">Explore</span>
-            <span className="px-5 py-2.5 rounded-full bg-[#17152d] text-white text-sm">All Projects</span>
-            <span className="px-5 py-2.5 rounded-full border border-black/10 text-sm">Plots</span>
-            <span className="px-5 py-2.5 rounded-full border border-black/10 text-sm">Townships</span>
-            <span className="px-5 py-2.5 rounded-full border border-black/10 text-sm">Commercial</span>
+            <div role="group" aria-label="Filter projects" className="flex flex-wrap gap-3">
+              {categories.map(value => <button key={value} type="button" aria-pressed={category === value} onClick={() => setCategory(value)} className={`px-5 py-2.5 rounded-full border text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${category === value ? "bg-[#17152d] text-white border-transparent" : "border-black/10 hover:bg-slate-100"}`}>{value}</button>)}
+            </div>
           </div>
         </section>
 
@@ -39,8 +42,10 @@ const ProjectsPage = () => {
               <p className="mt-4 md:mt-0 max-w-md text-muted-foreground">Premium projects, local guidance and a direct path from enquiry to site visit.</p>
             </div>
 
+            <p role="status" className="mb-6 text-muted-foreground">{filteredProjects.length} {filteredProjects.length === 1 ? "project" : "projects"}</p>
+            {filteredProjects.length === 0 && <div className="rounded-2xl border bg-white p-8 text-center"><h3 className="font-display text-2xl font-bold">No commercial projects listed right now</h3><p className="mt-3 text-muted-foreground">Explore all projects or share your requirement with our team.</p><Button variant="outline" className="mt-5" onClick={() => setCategory("All Projects")}>View All Projects</Button></div>}
             <div className="space-y-10">
-              {projects.map((project, index) => (
+              {filteredProjects.map((project) => (
                 <article key={project.slug} className="group bg-white rounded-[2rem] overflow-hidden border border-black/5 shadow-sm hover:shadow-xl transition-all duration-500">
                   <div className="grid lg:grid-cols-[1.15fr_0.85fr] min-h-[420px]">
                     <div className="relative min-h-[320px] lg:min-h-full overflow-hidden bg-gradient-to-br from-[#dcecff] via-[#eeeafa] to-[#d9d5ed]">
@@ -54,7 +59,7 @@ const ProjectsPage = () => {
                         <span className="text-xs uppercase tracking-[0.22em] font-semibold">{project.companyName}</span>
                         <h3 className="font-display text-3xl md:text-5xl font-bold mt-2">{project.name}</h3>
                       </div>
-                      <div className="absolute top-6 left-6 px-4 py-2 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-[#17152d]">{index === 0 ? "Featured" : "Ongoing"}</div>
+                      <div className="absolute top-6 left-6 px-4 py-2 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-[#17152d]">{project.slug === "central-world-nellore" ? "Featured" : project.status}</div>
                     </div>
 
                     <div className="p-7 md:p-10 lg:p-12 flex flex-col justify-center">
@@ -66,7 +71,7 @@ const ProjectsPage = () => {
                       </div>
                       <div className="flex flex-wrap gap-3">
                         <Button variant="brand" size="lg" asChild><Link to={project.marketingPath}>View Project <ArrowRight size={18}/></Link></Button>
-                        <Button variant="outline" size="lg" asChild><Link to="/contact">Enquire Now</Link></Button>
+                        <Button variant="outline" size="lg" asChild><Link to={`/contact?project=${encodeURIComponent(project.slug)}`}>Enquire Now</Link></Button>
                       </div>
                     </div>
                   </div>

@@ -92,14 +92,14 @@ const ProjectPage = () => {
             <section id="location" className="py-16 md:py-24 bg-[#f7f5f0]">
               <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-10 items-center">
                 <div><p className="text-xs uppercase tracking-[0.22em] font-bold text-[#6044b8] mb-3">Location</p><h2 className="font-display text-4xl md:text-6xl font-bold text-[#17152d] mb-6">Connected to what matters.</h2><p className="text-lg text-muted-foreground leading-relaxed">{project.location}. Contact our team for the exact site location, route guidance and site-visit coordination.</p></div>
-                <div className="min-h-[330px] rounded-[2rem] bg-white border border-black/5 shadow-sm flex items-center justify-center"><div className="text-center px-8"><MapPin size={50} className="mx-auto text-[#6044b8] mb-4"/><p className="font-display text-2xl font-bold">{project.location}</p><Button className="mt-6" variant="outline" asChild><Link to="/contact">Plan a Site Visit</Link></Button></div></div>
+                <div className="min-h-[330px] rounded-[2rem] bg-white border border-black/5 shadow-sm flex items-center justify-center"><div className="text-center px-8"><MapPin size={50} className="mx-auto text-[#6044b8] mb-4"/><p className="font-display text-2xl font-bold">{project.location}</p><Button className="mt-6" variant="outline" asChild><Link to={`/contact?project=${encodeURIComponent(project.slug)}`}>Plan a Site Visit</Link></Button></div></div>
               </div>
             </section>
 
             <section id="documents" className="py-16 md:py-24 bg-white">
               <div className="container mx-auto px-4 max-w-5xl">
                 <div className="text-center mb-10"><p className="text-xs uppercase tracking-[0.22em] font-bold text-[#6044b8] mb-3">Project Documentation</p><h2 className="font-display text-4xl md:text-5xl font-bold">Make an informed property decision.</h2></div>
-                <div className="rounded-[2rem] border border-border bg-[#f7f9ff] p-7 md:p-10 flex flex-col md:flex-row gap-7 md:items-center md:justify-between"><div><h3 className="font-display text-2xl font-bold mb-2">Need layout and approval details?</h3><p className="text-muted-foreground max-w-2xl">Anantha Real Estate can provide the relevant project documents for customer verification. Live plot inventory and internal price sheets are intentionally not published online.</p></div><Button variant="brand" size="lg" asChild><Link to="/contact">Request Details <ArrowRight size={18}/></Link></Button></div>
+                <div className="rounded-[2rem] border border-border bg-[#f7f9ff] p-7 md:p-10 flex flex-col md:flex-row gap-7 md:items-center md:justify-between"><div><h3 className="font-display text-2xl font-bold mb-2">Need layout and approval details?</h3><p className="text-muted-foreground max-w-2xl">Anantha Real Estate can provide the relevant project documents for customer verification. Live plot inventory and internal price sheets are intentionally not published online.</p></div><Button variant="brand" size="lg" asChild><Link to={`/contact?project=${encodeURIComponent(project.slug)}`}>Request Details <ArrowRight size={18}/></Link></Button></div>
               </div>
             </section>
           </>
@@ -124,7 +124,7 @@ const ProjectPage = () => {
           </section>
         )}
 
-        <PremiumCTA title={`Interested in ${project.name}?`} description="Speak with our team to reconfirm current project information, availability and the next step." href="/contact" label="Enquire About This Project" />
+        <PremiumCTA title={`Interested in ${project.name}?`} description="Speak with our team to reconfirm current project information, availability and the next step." href={`/contact?project=${encodeURIComponent(project.slug)}`} label="Enquire About This Project" />
       </main>
       <Footer />
     </div>

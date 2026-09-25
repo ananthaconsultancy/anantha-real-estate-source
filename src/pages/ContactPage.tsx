@@ -4,7 +4,12 @@ import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import PremiumPageHero from "@/components/PremiumPageHero";
 
+import { useSearchParams } from "react-router-dom";
+import { getProjectBySlug } from "@/data/projects";
+
 const ContactPage = () => {
+  const [params] = useSearchParams();
+  const project = getProjectBySlug(params.get("project") || "");
   return (
     <div className="min-h-screen bg-background">
       <SEO
@@ -20,7 +25,7 @@ const ContactPage = () => {
           description="Talk to our Nellore team about a property requirement, project, investment opportunity, commercial space or consultation."
         />
         <div className="bg-gradient-to-b from-white to-[#f7f9ff]">
-          <Contact />
+          <Contact key={project?.slug || "general"} projectName={project?.name} />
         </div>
       </main>
       <Footer />

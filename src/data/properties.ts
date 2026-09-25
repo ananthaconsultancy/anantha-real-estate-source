@@ -9,6 +9,8 @@ export type PropertyImage = {
 
 export type Property = {
   slug: string;
+  publicId?: string;
+  insightSignals?: string[];
   name: string;
   type: PropertyType;
   status: PropertyStatus;

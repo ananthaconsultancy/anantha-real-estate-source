@@ -4,13 +4,13 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 
-const Contact = () => {
+const Contact = ({ projectName }: { projectName?: string }) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    message: "",
+    message: projectName ? `I am interested in ${projectName}. Please share current availability and details.` : "",
   });
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -68,7 +68,7 @@ const Contact = () => {
               name: formData.name,
               email: formData.email,
               phone: formData.phone,
-              message: formData.message,
+              message: projectName ? `Project: ${projectName}\n\n${formData.message}` : formData.message,
               timestamp: new Date().toLocaleString(),
             },
           ],
@@ -108,11 +108,13 @@ const Contact = () => {
       icon: Phone,
       title: "Call Us",
       content: "+91 63029 66604",
+      href: "tel:+916302966604",
     },
     {
       icon: Mail,
       title: "Email Us",
       content: "jvk.aconsultancy@gmail.com",
+      href: "mailto:jvk.aconsultancy@gmail.com",
     },
     {
       icon: Clock,
@@ -153,7 +155,7 @@ const Contact = () => {
                       {info.title}
                     </h4>
                     <p className="text-muted-foreground text-sm font-body">
-                      {info.content}
+                      {info.href ? <a href={info.href} className="underline underline-offset-4 hover:text-accent">{info.content}</a> : info.content}
                     </p>
                   </div>
                 </div>
@@ -166,6 +168,7 @@ const Contact = () => {
             <h3 className="font-display text-2xl font-bold text-foreground mb-6">
               Send us a Message
             </h3>
+            {projectName && <p className="mb-5 rounded-lg bg-accent/10 p-3 text-sm">Enquiry about <strong>{projectName}</strong></p>}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
