@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/admin-dashboard",
+      "destination": "/api/activity-operations?dashboard=1"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     },
@@ -126,4 +130,3 @@
     }
   ]
 }
-
