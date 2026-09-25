@@ -65,6 +65,10 @@
       "destination": "/prerender/centralworld.html"
     },
     {
+      "source": "/admin/crm",
+      "destination": "/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -122,3 +126,4 @@
     }
   ]
 }
+
