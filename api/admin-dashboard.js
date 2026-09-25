@@ -22,14 +22,17 @@ export default async function handler(request, response) {
   if (!databaseUrl()) return send(response, 503, { error: "Database is not configured." });
   try {
     const { neon } = await import("@neondatabase/serverless"); const sql = neon(databaseUrl());
-    const [enquiries, visits, properties, deals, followups, activities] = await Promise.all([
+    const [enquiries, visits, properties, deals, followups, activities, recentEnquiries, recentDeals, recentProperties] = await Promise.all([
       sql`SELECT status, COUNT(*)::int AS count FROM enquiries GROUP BY status`,
       sql`SELECT status, COUNT(*)::int AS count FROM site_visits GROUP BY status`,
       sql`SELECT verification_status, publish_status, COUNT(*)::int AS count FROM property_listings GROUP BY verification_status, publish_status`,
       sql`SELECT status, COUNT(*)::int AS count FROM deals GROUP BY status`,
       sql`SELECT followup_ref,entity_type,entity_ref,due_at,notes,status FROM followups WHERE status='OPEN' ORDER BY due_at ASC LIMIT 12`,
       sql`SELECT activity_ref,entity_type,entity_ref,activity_type,summary,created_at FROM activities ORDER BY created_at DESC LIMIT 12`,
+      sql`SELECT e.enquiry_ref,e.name,e.phone,e.email,e.requirement,e.status,e.created_at,e.updated_at,p.property_type,p.location FROM enquiries e LEFT JOIN property_listings p ON p.public_id=e.property_public_id ORDER BY e.updated_at DESC LIMIT 80`,
+      sql`SELECT d.deal_ref,d.status,d.agreed_value,d.notes,d.updated_at,b.name AS buyer_name,b.phone AS buyer_phone,p.property_type,p.location FROM deals d LEFT JOIN buyers b ON b.buyer_ref=d.buyer_ref LEFT JOIN property_listings p ON p.public_id=d.property_public_id ORDER BY d.updated_at DESC LIMIT 80`,
+      sql`SELECT public_id,owner_name,phone,property_type,location,verification_status,publish_status,availability_status,created_at,updated_at FROM property_listings ORDER BY updated_at DESC LIMIT 80`,
     ]);
-    return send(response, 200, { email: admin.email, csrf: admin.csrf, metrics: { enquiries, visits, properties, deals }, followups, activities });
+    return send(response, 200, { email: admin.email, csrf: admin.csrf, metrics: { enquiries, visits, properties, deals }, followups, activities, recentEnquiries, recentDeals, recentProperties });
   } catch (error) { console.error("admin-dashboard", error); return send(response, 500, { error: "Could not load the operations dashboard." }); }
 }
