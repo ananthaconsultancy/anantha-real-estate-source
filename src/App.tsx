@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-const GBPAdmin = lazy(() => import("./pages/GBPAdmin"));
 const PropertyAdmin = lazy(() => import("./pages/PropertyAdmin"));
 const EnquiryAdmin = lazy(() => import("./pages/EnquiryAdmin"));
 const DealAdmin = lazy(() => import("./pages/DealAdmin"));
@@ -34,13 +33,6 @@ const queryClient = new QueryClient();
 const App = () => {
   const adminPath = window.location.pathname.replace(/\/$/, "");
   if (adminPath === "/admin/login") { return <Suspense fallback={<p>Loading login…</p>}><AdminLogin /></Suspense>; }
-  if (adminPath === "/admin/gbp") {
-    return (
-      <Suspense fallback={<p>Loading admin…</p>}>
-        <GBPAdmin />
-      </Suspense>
-    );
-  }
   if (adminPath === "/admin/operations") { return <Suspense fallback={<p>Loading operations…</p>}><OperationsAdmin /></Suspense>; }
   if (adminPath === "/admin/crm") { return <Suspense fallback={<p>Loading CRM…</p>}><CRMAdmin /></Suspense>; }
   if (adminPath === "/admin/deals") { return <Suspense fallback={<p>Loading deal pipeline…</p>}><DealAdmin /></Suspense>; }

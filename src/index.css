@@ -111,3 +111,8 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Google Business Profile is no longer part of the property operations workflow. */
+a[href="/admin/gbp"] {
+  display: none;
+}
