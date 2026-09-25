@@ -24,6 +24,7 @@ import ContactPage from "./pages/ContactPage";
 import PropertyConsultationPage from "./pages/PropertyConsultationPage";
 import NotFound from "./pages/NotFound";
 import CentralWorld from "./pages/centralworld";
+import CommercialsPage from "./pages/CommercialsPage";
 import ScrollToTop from "./components/ScrollToTop";
 import AnalyticsPageView from "./components/AnalyticsPageView";
 
@@ -65,6 +66,7 @@ const App = () => {
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/commercials" element={<CommercialsPage />} />
             <Route path="/project/:slug" element={<ProjectPage />} />
             <Route path="/properties" element={<PropertiesPage />} />
             <Route path="/properties/:category" element={<PropertyCategoryPage />} />

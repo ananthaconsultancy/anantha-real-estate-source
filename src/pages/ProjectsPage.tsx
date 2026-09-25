@@ -1,94 +1,32 @@
-import { useState } from "react";
-import { ArrowRight, MapPin } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowRight, MapPin, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
-import { Button } from "@/components/ui/button";
 import { projects } from "@/data/projects";
-import PremiumCTA from "@/components/PremiumCTA";
+import { stockImages } from "@/data/stockImages";
 
 const categories = ["All Projects", "Plots", "Townships", "Commercial"] as const;
+const imageFor = (slug: string) => slug === "motherland-green-meadows" ? "/projects/motherland/green-meadows/aerial-01.jpg" : slug === "central-world-nellore" ? stockImages.villaPool : stockImages.land;
+
 const ProjectsPage = () => {
   const [category, setCategory] = useState<typeof categories[number]>("All Projects");
-  const filteredProjects = projects.filter(project => category === "All Projects" || project.categories.includes(category));
-  return (
-    <div className="min-h-screen bg-[#f7f5f0]">
-      <SEO title="Real Estate Projects in Nellore | Anantha Real Estate" description="Explore premium residential, plotted and township projects represented by Anantha Real Estate across Nellore." path="/projects" />
-      <Navbar />
-      <main>
-        <section className="pt-32 md:pt-40 pb-16 md:pb-24 bg-[#17152d] text-white overflow-hidden relative">
-          <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-[#5eb1e3]/20 blur-3xl" />
-          <div className="container mx-auto px-4 relative">
-            <p className="text-xs uppercase tracking-[0.28em] font-bold text-white/55 mb-5">Anantha Real Estate · Projects</p>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold max-w-5xl leading-[0.98]">Creating more than spaces,<br/><span className="text-[#8cccf0]">crafting destinations.</span></h1>
-            <p className="mt-7 max-w-2xl text-lg md:text-xl text-white/65 leading-relaxed">Explore selected developments represented by Anantha Real Estate. Project information is presented clearly while live inventory and commercial price sheets remain private.</p>
-          </div>
-        </section>
-
-        <section className="py-8 bg-white border-b border-black/5">
-          <div className="container mx-auto px-4 flex flex-wrap gap-3 items-center">
-            <span className="text-sm font-semibold mr-3">Explore</span>
-            <div role="group" aria-label="Filter projects" className="flex flex-wrap gap-3">
-              {categories.map(value => <button key={value} type="button" aria-pressed={category === value} onClick={() => setCategory(value)} className={`px-5 py-2.5 rounded-full border text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${category === value ? "bg-[#17152d] text-white border-transparent" : "border-black/10 hover:bg-slate-100"}`}>{value}</button>)}
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="mb-12 md:flex md:items-end md:justify-between gap-8">
-              <div><p className="text-xs uppercase tracking-[0.25em] font-bold text-[#6044b8] mb-3">Ongoing Projects</p><h2 className="font-display text-4xl md:text-6xl font-bold text-[#17152d]">Find your next address.</h2></div>
-              <p className="mt-4 md:mt-0 max-w-md text-muted-foreground">Premium projects, local guidance and a direct path from enquiry to site visit.</p>
-            </div>
-
-            <p role="status" className="mb-6 text-muted-foreground">{filteredProjects.length} {filteredProjects.length === 1 ? "project" : "projects"}</p>
-            {filteredProjects.length === 0 && <div className="rounded-2xl border bg-white p-8 text-center"><h3 className="font-display text-2xl font-bold">No commercial projects listed right now</h3><p className="mt-3 text-muted-foreground">Explore all projects or share your requirement with our team.</p><Button variant="outline" className="mt-5" onClick={() => setCategory("All Projects")}>View All Projects</Button></div>}
-            <div className="space-y-10">
-              {filteredProjects.map((project) => (
-                <article key={project.slug} className="group bg-white rounded-[2rem] overflow-hidden border border-black/5 shadow-sm hover:shadow-xl transition-all duration-500">
-                  <div className="grid lg:grid-cols-[1.15fr_0.85fr] min-h-[420px]">
-                    <div className="relative min-h-[320px] lg:min-h-full overflow-hidden bg-gradient-to-br from-[#dcecff] via-[#eeeafa] to-[#d9d5ed]">
-                      {project.slug === "motherland-green-meadows" ? (
-                        <img src="/projects/motherland/green-meadows/aerial-01.jpg" alt="Motherland Green Meadows, Brahmadevam" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                      ) : (
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(94,177,227,.45),transparent_30%)]" />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-7 md:p-9 text-white">
-                        <span className="text-xs uppercase tracking-[0.22em] font-semibold">{project.companyName}</span>
-                        <h3 className="font-display text-3xl md:text-5xl font-bold mt-2">{project.name}</h3>
-                      </div>
-                      <div className="absolute top-6 left-6 px-4 py-2 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-[#17152d]">{project.slug === "central-world-nellore" ? "Featured" : project.status}</div>
-                    </div>
-
-                    <div className="p-7 md:p-10 lg:p-12 flex flex-col justify-center">
-                      <p className="text-xs uppercase tracking-[0.2em] font-bold text-[#6044b8] mb-3">{project.projectType}</p>
-                      <div className="flex items-start gap-2 text-sm text-muted-foreground mb-6"><MapPin size={17} className="mt-0.5 shrink-0" />{project.location}</div>
-                      <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-8">{project.description}</p>
-                      <div className="grid grid-cols-2 gap-3 mb-9">
-                        {project.highlights.slice(0,4).map((highlight) => <div key={highlight} className="border-t border-black/10 pt-3 text-sm font-medium text-[#17152d]">{highlight}</div>)}
-                      </div>
-                      <div className="flex flex-wrap gap-3">
-                        <Button variant="brand" size="lg" asChild><Link to={project.marketingPath}>View Project <ArrowRight size={18}/></Link></Button>
-                        <Button variant="outline" size="lg" asChild><Link to={`/contact?project=${encodeURIComponent(project.slug)}`}>Enquire Now</Link></Button>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16 md:py-20 bg-[#17152d] text-white overflow-hidden">
-          <div className="container mx-auto px-4"><div className="flex whitespace-nowrap font-display text-4xl md:text-7xl font-bold opacity-90 gap-8"><span>LOCAL KNOWLEDGE</span><span>•</span><span>BETTER DECISIONS</span><span>•</span><span>TRUSTED GUIDANCE</span></div></div>
-        </section>
-
-        <PremiumCTA title="Found a project you like?" description="Speak with Anantha Real Estate for current project information, document guidance and site-visit coordination." href="/contact" label="Enquire Now" />
-      </main>
-      <Footer />
-    </div>
-  );
+  const [term, setTerm] = useState("");
+  const [location, setLocation] = useState("All locations");
+  const locations = useMemo(() => ["All locations", ...Array.from(new Set(projects.map((project) => project.city)))], []);
+  const filtered = useMemo(() => projects.filter((project) => {
+    const text = `${project.name} ${project.companyName} ${project.location} ${project.projectType}`.toLowerCase();
+    return (category === "All Projects" || project.categories.includes(category)) && (location === "All locations" || project.city === location) && (!term.trim() || text.includes(term.trim().toLowerCase()));
+  }), [category, location, term]);
+  const featured = projects.find((project) => project.slug === "motherland-green-meadows") || projects[0];
+  const clear = () => { setCategory("All Projects"); setTerm(""); setLocation("All locations"); };
+  return <div className="min-h-screen bg-[#fafafa] text-slate-950"><SEO title="Real Estate Projects in Nellore | Anantha Real Estate" description="Explore premium residential, plotted and township projects represented by Anantha Real Estate across Nellore." path="/projects" /><Navbar /><main>
+    <section className="border-b border-slate-200 pt-32 md:pt-40"><div className="container mx-auto grid gap-10 px-4 pb-14 md:grid-cols-[1fr_.9fr] md:items-end"><div><p className="text-xs font-semibold uppercase tracking-[.22em] text-slate-500">Projects · Nellore</p><h1 className="mt-5 max-w-3xl font-display text-5xl font-semibold leading-[.98] md:text-7xl">Find a project for what’s next.</h1><p className="mt-6 max-w-xl leading-relaxed text-slate-600">Selected developments with clear project context, direct enquiries and support for arranging your next site visit.</p></div><div className="relative aspect-[5/3] overflow-hidden bg-slate-100"><img src={stockImages.land} alt="Planned residential community" className="h-full w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-slate-950 p-5 text-sm text-white">Project guidance built around your requirements.</div></div></div></section>
+    <section className="border-b border-slate-200 bg-white"><div className="container mx-auto grid gap-3 px-4 py-5 md:grid-cols-[1.4fr_1fr_auto]"><label className="relative"><Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18}/><input value={term} onChange={(event) => setTerm(event.target.value)} placeholder="Search project or developer" className="h-12 w-full border border-slate-300 bg-white pl-11 pr-4 text-sm outline-none focus:border-slate-950" /></label><select value={location} onChange={(event) => setLocation(event.target.value)} className="h-12 border border-slate-300 bg-white px-4 text-sm outline-none focus:border-slate-950">{locations.map((item) => <option key={item}>{item}</option>)}</select><button onClick={clear} className="h-12 border border-slate-950 px-5 text-sm font-semibold hover:bg-slate-950 hover:text-white">Clear filters</button></div></section>
+    <section className="container mx-auto px-4 py-14 md:py-20"><div className="mb-7 flex items-end justify-between gap-5"><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-slate-500">Featured development</p><h2 className="mt-3 font-display text-3xl font-semibold md:text-5xl">Worth a closer look.</h2></div><Link to={featured.marketingPath} className="hidden items-center gap-2 text-sm font-semibold md:inline-flex">View project <ArrowRight size={16}/></Link></div><article className="grid overflow-hidden border border-slate-200 bg-white md:grid-cols-2"><img src={imageFor(featured.slug)} alt={featured.name} className="h-72 w-full object-cover md:h-full"/><div className="p-7 md:p-10"><p className="text-xs font-semibold uppercase tracking-[.18em] text-slate-500">{featured.companyName}</p><h3 className="mt-3 font-display text-3xl font-semibold">{featured.name}</h3><p className="mt-4 flex gap-2 text-sm text-slate-600"><MapPin size={16} className="shrink-0"/>{featured.location}</p><p className="mt-6 leading-relaxed text-slate-600">{featured.description}</p><Link to={featured.marketingPath} className="mt-8 inline-flex items-center gap-2 bg-slate-950 px-5 py-3 text-sm font-semibold text-white">View project <ArrowRight size={16}/></Link></div></article></section>
+    <section className="border-y border-slate-200 bg-[#f4f4f2]"><div className="container mx-auto px-4 py-14 md:py-20"><div className="flex flex-col justify-between gap-6 md:flex-row md:items-end"><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-slate-500">Project directory</p><h2 className="mt-3 font-display text-4xl font-semibold">Explore developments.</h2></div><div role="group" aria-label="Project category" className="flex flex-wrap gap-2">{categories.map((item) => <button key={item} onClick={() => setCategory(item)} aria-pressed={category === item} className={`border px-4 py-2 text-sm ${category === item ? "border-slate-950 bg-slate-950 text-white" : "border-slate-300 bg-white hover:border-slate-950"}`}>{item}</button>)}</div></div><p className="mt-8 text-sm text-slate-500" role="status">{filtered.length} {filtered.length === 1 ? "project" : "projects"}</p>{filtered.length ? <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{filtered.map((project) => <article key={project.slug} className="overflow-hidden border border-slate-200 bg-white"><img src={imageFor(project.slug)} alt={project.name} className="aspect-[16/10] w-full object-cover"/><div className="p-6"><p className="text-xs font-semibold uppercase tracking-[.16em] text-slate-500">{project.projectType}</p><h3 className="mt-2 font-display text-2xl font-semibold">{project.name}</h3><p className="mt-3 flex gap-2 text-sm text-slate-600"><MapPin size={15} className="shrink-0"/>{project.location}</p><Link to={project.marketingPath} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold">View project <ArrowRight size={15}/></Link></div></article>)}</div> : <div className="mt-6 border border-slate-200 bg-white p-10 text-center"><h3 className="font-display text-2xl font-semibold">No projects match those filters.</h3><button onClick={clear} className="mt-4 text-sm font-semibold underline">Show all projects</button></div>}</div></section>
+    <section className="bg-slate-950 py-16 text-white"><div className="container mx-auto grid gap-8 px-4 md:grid-cols-[1fr_auto] md:items-end"><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-white/55">Developer partnerships</p><h2 className="mt-3 max-w-2xl font-display text-4xl font-semibold">A clearer way to bring your project to the right buyers.</h2></div><Link to="/contact" className="inline-flex w-fit items-center gap-2 border border-white px-5 py-3 text-sm font-semibold hover:bg-white hover:text-slate-950">Talk to our team <ArrowRight size={16}/></Link></div></section>
+  </main><Footer /></div>;
 };
 export default ProjectsPage;
