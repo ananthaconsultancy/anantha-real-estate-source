@@ -8,6 +8,7 @@ export type Project = {
   companyRole: string;
   status: ProjectStatus;
   projectType: string;
+  categories: ("Plots" | "Townships" | "Commercial")[];
   location: string;
   city: string;
   description: string;
@@ -33,6 +34,7 @@ export const projects: Project[] = [
     companyRole: "Developer",
     status: "Active",
     projectType: "Premium Township",
+    categories: ["Plots", "Townships"],
     location: "Kanaparthi Padu, Nellore",
     city: "Nellore",
     description:
@@ -58,6 +60,7 @@ export const projects: Project[] = [
     companyRole: "Channel Partner Project",
     status: "Active",
     projectType: "Premium Residential Plots",
+    categories: ["Plots"],
     location: "Brahmadevam, Muthukur Mandal, Nellore District",
     city: "Nellore",
     description:
@@ -86,6 +89,7 @@ export const projects: Project[] = [
     companyRole: "Channel Partner Project",
     status: "Active",
     projectType: "Premium Residential Plots",
+    categories: ["Plots"],
     location: "Atmakur, Nellore District",
     city: "Nellore",
     description:

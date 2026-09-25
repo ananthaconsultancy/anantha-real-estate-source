@@ -59,9 +59,9 @@ function publicListing(row){
     updatedAt:row.updated_at
   };
 }
-export default async function handler(req,res){
+export function createPropertiesHandler(loadSql = getSql) { return async function handler(req,res){
   if(req.method!=="GET"){res.setHeader("Allow","GET");return send(res,405,{error:"Method not allowed"});}
-  const sql=await getSql();if(!sql)return send(res,503,{error:"Public property inventory is not configured."});
+  const sql=await loadSql();if(!sql)return send(res,503,{error:"Public property inventory is not configured."});
   try{
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS publish_status TEXT NOT NULL DEFAULT 'DRAFT'`;
     await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS published_at TIMESTAMPTZ`;
@@ -74,9 +74,14 @@ export default async function handler(req,res){
     const id=/^PROP-/i.test(lookup)?lookup.toUpperCase():"";
     const rows=id
       ? await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,per_unit_valuation,bedrooms,apartment_name,property_age,floors,constructed_area,parking,godown_plot_type,notes,photos,public_photo_indexes,primary_photo_index,photo_alt_texts,verified_at,published_at,updated_at FROM property_listings WHERE public_id=${id} AND verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' AND availability_status='AVAILABLE' LIMIT 1`
-      : await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,per_unit_valuation,bedrooms,apartment_name,property_age,floors,constructed_area,parking,godown_plot_type,notes,photos,public_photo_indexes,primary_photo_index,photo_alt_texts,verified_at,updated_at FROM property_listings WHERE verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' AND availability_status='AVAILABLE' ORDER BY verified_at DESC NULLS LAST,updated_at DESC LIMIT 250`;
+      : await sql`SELECT public_id,property_type,location,area,area_unit,facing,total_valuation,per_unit_valuation,bedrooms,apartment_name,property_age,floors,constructed_area,parking,godown_plot_type,notes,photos,public_photo_indexes,primary_photo_index,photo_alt_texts,verified_at,updated_at FROM property_listings WHERE verification_status='APPROVED' AND status='VERIFIED' AND publish_status='PUBLISHED' AND availability_status='AVAILABLE' ORDER BY verified_at DESC NULLS LAST,updated_at DESC LIMIT ${lookup ? null : 250}`;
     const listings=rows.map(publicListing);
-    if(id&&!listings.length)return send(res,404,{error:"Property not found."});
-    return send(res,200,id?{listing:listings[0]}:{listings});
+    if (lookup) {
+      const listing = id ? listings[0] : listings.find(item => item.slug === lookup.toLowerCase());
+      if (!listing) return send(res,404,{error:"Property not found."});
+      return send(res,200,{listing});
+    }
+    return send(res,200,{listings});
   }catch(e){console.error("public-properties error",e);return send(res,500,{error:"Could not load public properties."});}
-}
+}; }
+export default createPropertiesHandler();

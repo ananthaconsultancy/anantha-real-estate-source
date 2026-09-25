@@ -7,6 +7,7 @@ export type AnalyticsEventName =
   | "phone_click"
   | "site_visit_click"
   | "property_view"
+  | "property_enquiry_submit"
   | "project_view"
   | "seller_lead_submit"
   | "buyer_requirement_submit";

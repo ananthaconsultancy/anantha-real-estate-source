@@ -11,7 +11,7 @@ import PremiumCTA from "@/components/PremiumCTA";
 
 const PropertyPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { property, loading } = usePublicProperty(slug);
+  const { property, loading, error } = usePublicProperty(slug);
   const [enquiry,setEnquiry]=useState({name:"",phone:"",email:"",requirement:"",consent:false});
   const [enquiryState,setEnquiryState]=useState<{busy:boolean;message:string;error:boolean}>({busy:false,message:"",error:false});
 
@@ -21,6 +21,10 @@ const PropertyPage: React.FC = () => {
 
   if (loading) {
     return <div className="min-h-screen bg-background"><Navbar /><main className="pt-32 pb-24 container mx-auto px-4 text-center">Loading verified property…</main><Footer /></div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen bg-background"><Navbar /><main className="pt-32 pb-24 container mx-auto px-4 text-center"><h1 className="font-display text-4xl font-bold mb-4">Property details temporarily unavailable</h1><p role="alert" className="text-muted-foreground mb-8">Please try again or contact our team for details.</p><Button onClick={() => window.location.reload()} variant="brand">Try Again</Button><Button asChild variant="outline" className="ml-3"><Link to="/contact">Contact Us</Link></Button></main><Footer /></div>;
   }
 
   if (!property) {
