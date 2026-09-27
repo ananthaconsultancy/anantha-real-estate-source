@@ -1,5 +1,5 @@
 const JSON_HEADERS = { "Content-Type": "application/json; charset=utf-8" };
-const send=(res,status,body)=>{res.statusCode=status;res.setHeader("Cache-Control","public, max-age=0, s-maxage=30, stale-while-revalidate=60");Object.entries(JSON_HEADERS).forEach(([k,v])=>res.setHeader(k,v));res.end(JSON.stringify(body));};
+const send=(res,status,body)=>{res.statusCode=status;res.setHeader("Cache-Control","public, max-age=0, s-maxage=300, stale-while-revalidate=600");Object.entries(JSON_HEADERS).forEach(([k,v])=>res.setHeader(k,v));res.end(JSON.stringify(body));};
 async function getSql(){const url=process.env.ANANTHA_DATABASE_URL||process.env.POSTGRES_URL||process.env.DATABASE_URL;if(!url)return null;const {neon}=await import("@neondatabase/serverless");return neon(url);}
 const typeMap={Plot:"plots",Flat:"apartments",House:"villas",Godown:"commercial",Other:"land"};
 const slugify=(v)=>String(v||"").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
@@ -63,13 +63,6 @@ export function createPropertiesHandler(loadSql = getSql) { return async functio
   if(req.method!=="GET"){res.setHeader("Allow","GET");return send(res,405,{error:"Method not allowed"});}
   const sql=await loadSql();if(!sql)return send(res,503,{error:"Public property inventory is not configured."});
   try{
-    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS publish_status TEXT NOT NULL DEFAULT 'DRAFT'`;
-    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS published_at TIMESTAMPTZ`;
-    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS verified_at TIMESTAMPTZ`;
-    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS availability_status TEXT NOT NULL DEFAULT 'AVAILABLE'`;
-    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS public_photo_indexes JSONB`;
-    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS primary_photo_index INTEGER`;
-    await sql`ALTER TABLE property_listings ADD COLUMN IF NOT EXISTS photo_alt_texts JSONB`;
     const lookup=String(req.query?.id||req.query?.slug||"").trim();
     const id=/^PROP-/i.test(lookup)?lookup.toUpperCase():"";
     const rows=id

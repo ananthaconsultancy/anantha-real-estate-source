@@ -10,21 +10,21 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePageV2 from "./pages/HomePageV2";
-import AboutPage from "./pages/AboutPage";
-import ServicesPage from "./pages/ServicesPage";
-import PortfolioPage from "./pages/PortfolioPage";
-import ProjectsPage from "./pages/ProjectsPage";
-import ProjectPage from "./pages/ProjectPage";
-import PropertiesPage from "./pages/PropertiesPage";
-import PropertyCategoryPage from "./pages/PropertyCategoryPage";
-import PropertyPage from "./pages/PropertyPage";
-import PropertyIntelligencePage from "./pages/PropertyIntelligencePage";
-import ContactPage from "./pages/ContactPage";
-import PropertyConsultationPage from "./pages/PropertyConsultationPage";
-import NotFound from "./pages/NotFound";
-import CentralWorld from "./pages/centralworld";
-import CommercialsPage from "./pages/CommercialsPage";
+const HomePageV2 = lazy(() => import("./pages/HomePageV2"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const ServicesPage = lazy(() => import("./pages/ServicesPage"));
+const PortfolioPage = lazy(() => import("./pages/PortfolioPage"));
+const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
+const ProjectPage = lazy(() => import("./pages/ProjectPage"));
+const PropertiesPage = lazy(() => import("./pages/PropertiesPage"));
+const PropertyCategoryPage = lazy(() => import("./pages/PropertyCategoryPage"));
+const PropertyPage = lazy(() => import("./pages/PropertyPage"));
+const PropertyIntelligencePage = lazy(() => import("./pages/PropertyIntelligencePage"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const PropertyConsultationPage = lazy(() => import("./pages/PropertyConsultationPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const CentralWorld = lazy(() => import("./pages/centralworld"));
+const CommercialsPage = lazy(() => import("./pages/CommercialsPage"));
 import ScrollToTop from "./components/ScrollToTop";
 import AnalyticsPageView from "./components/AnalyticsPageView";
 
@@ -54,6 +54,7 @@ const App = () => {
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <ScrollToTop />
           <AnalyticsPageView />
+          <Suspense fallback={<main className="grid min-h-[50vh] place-items-center text-sm text-slate-500">Loading…</main>}>
           <Routes>
             <Route path="/" element={<HomePageV2 />} />
             <Route path="/about" element={<AboutPage />} />
@@ -71,6 +72,7 @@ const App = () => {
             <Route path="/centralworld" element={<CentralWorld />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
