@@ -1,0 +1,28 @@
+.central-world {
+  --background: 225 100% 99%;
+  --foreground: 240 25% 25%;
+  --primary: 240 29% 35%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 210 90% 42%;
+  --accent-foreground: 0 0% 100%;
+  --border: 232 35% 92%;
+  --brand-cyan: 194 100% 46%;
+  --brand-blue: 210 100% 42%;
+  --brand-indigo: 237 40% 42%;
+  --brand-purple: 252 38% 46%;
+  --brand-dark: 240 29% 22%;
+  --muted-foreground: 235 13% 43%;
+  --cream: 225 100% 98%;
+  --gold: 210 90% 42%;
+}
+.central-world .cw-gradient-text {
+  background: linear-gradient(120deg, #008fd3, #48449a 70%, #7563bf);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.central-world .cw-primary {
+  background: linear-gradient(110deg, #087bbd, #51499b);
+}
+.central-world .cw-primary:hover { background: #41417e; }
+
