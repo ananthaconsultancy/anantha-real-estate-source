@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import "./centralworld.css";
 
 const venturePhoto = "https://d2npdtryso7wvr.cloudfront.net/image/662e1d1f6e39d1036c323f42/fmjsgbad_wamidHBgMOTE5MzkxMTEzOTAzFQIAEhggQTVDODdDOEMxNDZDODMyRDc3NEM0MTQ1MzlCNTA2MDQA";
-const photoSource = "https://realtyofindia.com/listing/green-homes-central-world-l3598";
 
 const phone = "+916302966604";
 const visitUrl = "https://calendly.com/jvk-aconsultancy/30min";
@@ -38,7 +37,7 @@ export default function CentralWorld() {
           </div>
           <figure className="overflow-hidden rounded-3xl border border-[#e3e5f2] bg-[#f0f3ff] shadow-xl shadow-indigo-100/50">
             <img src={venturePhoto} alt="Central World entrance signage and flowers, photographed at the venture" width="1600" height="1067" fetchPriority="high" className="aspect-[3/2] w-full object-cover"/>
-            <figcaption className="flex flex-wrap items-center justify-between gap-2 bg-white p-4 text-xs text-[#636780]"><span>Central World · Venture photograph</span><a href={photoSource} target="_blank" rel="noreferrer" className="font-semibold text-[#5260aa] underline underline-offset-4">Photo source</a></figcaption>
+            <figcaption className="flex flex-wrap items-center justify-between gap-2 bg-white p-4 text-xs text-[#636780]"><span>Central World · Venture photograph</span></figcaption>
           </figure>
         </div>
       </section>
@@ -66,7 +65,7 @@ export default function CentralWorld() {
 
       <section id="gallery" className="scroll-mt-40 bg-[#f0f3ff] py-16 sm:py-24">
         <div className="container mx-auto grid items-center gap-10 px-4 sm:px-6 lg:grid-cols-[1.3fr_.7fr]">
-          <figure className="overflow-hidden rounded-2xl bg-white shadow-sm"><img src={venturePhoto} alt="Real Central World venture signage shown on the Nellore project listing" width="1600" height="1067" loading="lazy" decoding="async" className="aspect-[3/2] w-full object-contain"/><figcaption className="p-4 text-sm text-[#636780]">Central World entrance signage. <a href={photoSource} target="_blank" rel="noreferrer" className="text-[#5260aa] underline">View original listing</a></figcaption></figure>
+          <figure className="overflow-hidden rounded-2xl bg-white shadow-sm"><img src={venturePhoto} alt="Central World entrance" width="1600" height="1067" loading="lazy" decoding="async" className="aspect-[3/2] w-full object-contain"/><figcaption className="p-4 text-sm text-[#636780]">Central World</figcaption></figure>
           <div><p className="text-xs font-bold uppercase tracking-[.2em] text-[#5260aa]">At the venture</p><h2 className="mt-4 font-display text-4xl font-bold text-[#303058]">Meet Central World<br/>in person.</h2><p className="mt-5 text-base leading-8 text-[#636780]">See the approach road, explore available plots and get a closer look at the development during your site visit.</p><a href={visitUrl} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-2 font-semibold text-[#5260aa]">Arrange a visit <ArrowRight size={17}/></a></div>
         </div>
       </section>
