@@ -14,7 +14,7 @@ const reviews: Review[] = [
 ];
 
 export default function Testimonials() {
-  const [viewport, carousel] = useEmblaCarousel({ loop: true, align: "start" });
+  const [viewport, carousel] = useEmblaCarousel({ loop: true, align: "center", slidesToScroll: 1 });
   const [selected, setSelected] = useState(0);
   const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -49,25 +49,29 @@ export default function Testimonials() {
   };
 
   return (
-    <section id="testimonials" aria-labelledby="testimonials-title" className="bg-[#f5f6fc] py-20 text-[#303058] md:py-28">
-      <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[.8fr_1.2fr] lg:gap-16">
-        <div>
-          <p className="mb-5 text-xs font-bold uppercase tracking-[.18em] text-[#5260aa]">Google reviews</p>
-          <h2 id="testimonials-title" className="max-w-lg font-display text-3xl font-semibold leading-tight md:text-5xl">The relationship matters as much as the transaction.</h2>
-          <p className="mt-6 max-w-md leading-7 text-[#636780]">Verified feedback from customers of Anantha Real Estate.</p>
-          <div className="mt-6 text-sm"><p className="font-semibold">5.0 / 5 · 11 Google reviews</p><p className="mt-2 text-[#636780]">Customer feedback from Anantha’s Google Business Profile</p></div>
-        </div>
-        <div role="region" aria-roledescription="carousel" aria-label="Google customer reviews" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocusCapture={() => setPaused(true)} onKeyDown={event => { if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); step(event.key === "ArrowLeft" ? -1 : 1); } }} className="min-w-0">
-          <div ref={viewport} className="overflow-hidden rounded-2xl border border-[#e3e5f2] bg-white">
-            <div className="flex touch-pan-y">
-              {reviews.map((review, index) => <article key={review.id} role="group" aria-roledescription="slide" aria-label={(index + 1) + " of " + reviews.length} aria-hidden={selected !== index} className="min-w-0 flex-[0_0_100%] p-7 sm:p-10">
-                <div className="mb-6 flex gap-1 text-[#5260aa]" aria-label={review.rating + " out of 5 stars"}>{Array.from({ length: 5 }, (_, i) => <Star key={i} size={18} aria-hidden="true" className={i < review.rating ? "fill-current" : "opacity-20"} />)}</div>
-                <blockquote className="whitespace-pre-line break-words font-display text-xl leading-relaxed md:text-2xl">“{review.content}”</blockquote>
-                <div className="mt-8 flex items-center gap-3"><span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#eef0ff] font-semibold text-[#51499b]">{review.name.charAt(0)}</span><div><p className="font-semibold">{review.name}</p><p className="mt-1 text-xs text-[#636780]">Google review</p></div></div>
-              </article>)}
-            </div>
+    <section id="testimonials" aria-label="Google customer reviews" className="overflow-hidden bg-gradient-to-br from-[#087fc3] via-[#2766b3] to-[#51499b] py-20 text-white md:py-28">
+      <div role="region" aria-roledescription="carousel" aria-label="Google customer reviews" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocusCapture={() => setPaused(true)} onKeyDown={event => { if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); step(event.key === "ArrowLeft" ? -1 : 1); } }} className="mx-auto max-w-6xl px-0 sm:px-4">
+        <div ref={viewport} className="overflow-hidden py-6">
+          <div className="flex touch-pan-y items-center">
+            {reviews.map((review, index) => {
+              const active = selected === index;
+              return <article key={review.id} role="group" aria-roledescription="slide" aria-label={(index + 1) + " of " + reviews.length} aria-hidden={!active} className={"min-w-0 flex-[0_0_82%] px-2 transition-all duration-500 sm:flex-[0_0_60%] sm:px-5 " + (active ? "scale-100 opacity-100" : "scale-90 opacity-45")}>
+                <div className="flex min-h-[360px] flex-col rounded-2xl bg-white px-7 py-9 text-center text-[#303058] shadow-2xl shadow-[#18306b]/30 sm:min-h-[385px] sm:px-10 sm:py-11">
+                  <span aria-hidden="true" className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-[#12a6dc] to-[#6654af] text-lg font-bold text-white shadow-md">{review.name.charAt(0)}</span>
+                  <blockquote className="my-auto whitespace-pre-line break-words font-display text-base leading-7 sm:text-lg sm:leading-8">“{review.content}”</blockquote>
+                  <div className="mt-7">
+                    <p className="font-semibold">{review.name}</p>
+                    <div className="mt-2 flex justify-center gap-1 text-[#296db8]" aria-label={review.rating + " out of 5 stars"}>{Array.from({ length: 5 }, (_, i) => <Star key={i} size={14} aria-hidden="true" className={i < review.rating ? "fill-current" : "opacity-20"} />)}</div>
+                  </div>
+                </div>
+              </article>;
+            })}
           </div>
-          <div className="mt-5 flex items-center justify-between gap-3"><span className="text-sm text-[#636780]" aria-live={paused || reducedMotion ? "polite" : "off"}>{selected + 1} / {reviews.length}</span><div className="flex gap-2"><button type="button" aria-label="Previous testimonial" onClick={() => step(-1)} className="rounded-full border border-[#d6d9ec] bg-white p-3 hover:bg-[#eef0ff]"><ArrowLeft size={18}/></button>{!reducedMotion && <button type="button" aria-label={paused ? "Play testimonial rotation" : "Pause testimonial rotation"} onClick={() => setPaused(value => !value)} className="rounded-full border border-[#d6d9ec] bg-white p-3 hover:bg-[#eef0ff]">{paused ? <Play size={18}/> : <Pause size={18}/>}</button>}<button type="button" aria-label="Next testimonial" onClick={() => step(1)} className="rounded-full border border-[#d6d9ec] bg-white p-3 hover:bg-[#eef0ff]"><ArrowRight size={18}/></button></div></div>
+        </div>
+        <div className="mt-6 flex items-center justify-center gap-3">
+          <button type="button" aria-label="Previous testimonial" onClick={() => step(-1)} className="rounded-full border border-white/45 bg-white/10 p-3 text-white transition hover:bg-white/20"><ArrowLeft size={18}/></button>
+          {!reducedMotion && <button type="button" aria-label={paused ? "Play testimonial rotation" : "Pause testimonial rotation"} onClick={() => setPaused(value => !value)} className="rounded-full border border-white/45 bg-white/10 p-3 text-white transition hover:bg-white/20">{paused ? <Play size={18}/> : <Pause size={18}/>}</button>}
+          <button type="button" aria-label="Next testimonial" onClick={() => step(1)} className="rounded-full border border-white/45 bg-white/10 p-3 text-white transition hover:bg-white/20"><ArrowRight size={18}/></button>
         </div>
       </div>
     </section>
