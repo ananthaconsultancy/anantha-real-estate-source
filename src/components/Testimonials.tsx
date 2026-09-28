@@ -4,9 +4,13 @@ import { ArrowLeft, ArrowRight, Pause, Play, Star } from "lucide-react";
 
 type Review = { id: string; name: string; content: string; rating: number };
 const reviews: Review[] = [
-  { id: "google-bandaru-saisree", name: "Bandaru Saisree", content: "They helped us find a fantastic home within our budget.", rating: 5 },
-  { id: "google-moni-swahith", name: "Moni Swahith", content: "I had a very good experience with the team.", rating: 5 },
-  { id: "google-mahesh-dema", name: "Mahesh Dema", content: "Their communication was professional and transparent.", rating: 5 },
+  { id: "google-mahesh-dema", name: "Mahesh Dema", content: "Anantha Real Estate We had a very good experience with the house consultancy of Anantha Real estate . They guided us clearly throughout the process and helped us choose the right property based on our budget and requirements. Their communication was professional and transparent. Highly recommended.with Anantha Real Estate", rating: 5 },
+  { id: "google-akshay-yajnik", name: "Akshay Yajnik", content: "Shashank is one of the best agents i have come across. He is very understanding, polite, and accommodating. I would recommend anyone who is looking for a real estate property to connect with him only.", rating: 5 },
+  { id: "google-bandaru-saisree", name: "Bandaru Saisree", content: "\"We have a very good experience with Anantha real estate. They were highly responsive and, as first-time buyers, we really appreciated their patience and expert knowledge in navigating the market. They helped us find a fantastic home within our budget. Highly recommend!\"", rating: 5 },
+  { id: "google-prasad-cherukuru", name: "prasad cherukuru", content: "మాకు మీరు తిసిఇచ్చిన ఇల్లు బాగుంది నా తరుపున ఏమైనా కొనటం కానీ అమ్మటం కాని ఉంటే మీకే చెప్తాను అన్న.All the from ur new beginnings", rating: 5 },
+  { id: "google-moni-swahith", name: "Moni Swahith", content: "If you are looking for the properties , and if you don't know how to identify the best properties which will grow in future,this real-estate consultancy really helps you to find it. I had a very good experience with the team. Definitely give it a try.", rating: 5 },
+  { id: "google-lokesh-madhali", name: "Lokesh Madhali", content: "This consultancy helps me to find the right property in my budget and the entire process is unique and takes care of everything which makes my work easy.", rating: 5 },
+  { id: "google-ramamohan-gandikota", name: "Ramamohan Gandikota", content: "Quiet Good", rating: 5 },
 ];
 
 export default function Testimonials() {
