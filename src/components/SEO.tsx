@@ -57,7 +57,7 @@ const SEO = ({
       name: "Anantha Real Estate",
       url: SITE_URL,
       logo: DEFAULT_IMAGE,
-      email: "jvk.aconsultancy@gmail.com",
+      email: "contact@anantharealestate.in",
       telephone: "+916302966604",
       sameAs: [
         "https://www.instagram.com/anantha_real_estate",
@@ -72,7 +72,7 @@ const SEO = ({
       logo: DEFAULT_IMAGE,
       image: DEFAULT_IMAGE,
       telephone: "+916302966604",
-      email: "jvk.aconsultancy@gmail.com",
+      email: "contact@anantharealestate.in",
       parentOrganization: { "@id": ORGANIZATION_ID },
       address: {
         "@type": "PostalAddress",
