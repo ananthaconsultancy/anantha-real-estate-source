@@ -1,0 +1,33 @@
+import { createContext, useContext, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { MessageCircle, X } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
+
+type LeadContext = { openLead: (interest?: string, intent?: string) => void };
+const Ctx=createContext<LeadContext>({openLead:()=>{}});
+export const useLeadEnquiry=()=>useContext(Ctx);
+
+const infer=(path:string)=>{
+ const clean=path.split("?")[0];
+ if(clean.startsWith("/project/")) return {type:"Project Enquiry",interest:clean.split("/").pop()?.replace(/-/g," ")||"Project"};
+ if(clean==="/centralworld") return {type:"Project Enquiry",interest:"Central World"};
+ if(clean.startsWith("/property/")) return {type:"Property Enquiry",interest:clean.split("/").pop()?.replace(/-/g," ")||"Property"};
+ if(clean.startsWith("/properties/")) return {type:"Property Search",interest:clean.split("/").pop()?.replace(/-/g," ")||"Properties"};
+ if(clean==="/commercials") return {type:"Commercial Enquiry",interest:"Commercial Real Estate"};
+ if(clean==="/property-consultation") return {type:"Consultation",interest:"Property Consultation"};
+ if(clean==="/projects") return {type:"Project Enquiry",interest:"Projects"};
+ if(clean==="/services") return {type:"Service Enquiry",interest:"Real Estate Services"};
+ return {type:"General Enquiry",interest:"Anantha Real Estate"};
+};
+
+export function LeadEnquiryProvider({children}:{children:React.ReactNode}){
+ const loc=useLocation(); const detected=useMemo(()=>infer(loc.pathname),[loc.pathname]);
+ const [open,setOpen]=useState(false); const [interest,setInterest]=useState(""); const [intent,setIntent]=useState("Request Callback");
+ const [form,setForm]=useState({name:"",phone:"",email:"",message:""}); const [busy,setBusy]=useState(false); const [done,setDone]=useState(false);
+ const openLead=(i?:string,x?:string)=>{setInterest(i||detected.interest);setIntent(x||"Request Callback");setDone(false);setOpen(true)};
+ const payload=()=>({name:form.name.trim(),phone:form.phone.trim(),email:form.email.trim(),message:form.message.trim(),lead_type:detected.type,interest:interest||detected.interest,intent,source:"Website",source_page:loc.pathname,page_url:window.location.href,timestamp:new Date().toISOString()});
+ const register=async()=>{if(!form.name.trim()||form.phone.replace(/\D/g,"").length<7)throw new Error("Please enter your name and a valid phone number.");const p=payload();const r=await fetch("https://sheetdb.io/api/v1/5t6g1w4g6wj80",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:[p]})});if(!r.ok)throw new Error("Could not register enquiry.");trackEvent("lead_registered",{lead_type:p.lead_type,intent:p.intent,source_page:p.source_page});return p};
+ const submit=async(e:React.FormEvent)=>{e.preventDefault();setBusy(true);try{await register();setDone(true)}catch(e){alert(e instanceof Error?e.message:"Could not register enquiry.")}finally{setBusy(false)}};
+ const whatsapp=async()=>{setBusy(true);try{const p=await register();const text=`Hi Anantha Real Estate, I am ${p.name}. I am interested in ${p.interest}. Intent: ${p.intent}. I came from ${p.source_page}.${p.message?` Message: ${p.message}`:""}`;window.open(`https://wa.me/916302966604?text=${encodeURIComponent(text)}`,"_blank","noopener,noreferrer");setDone(true)}catch(e){alert(e instanceof Error?e.message:"Could not register enquiry.")}finally{setBusy(false)}};
+ return <Ctx.Provider value={{openLead}}>{children}{open&&<div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-950/65 p-4 backdrop-blur-sm" onMouseDown={e=>e.target===e.currentTarget&&setOpen(false)}><div className="mx-auto mt-[6vh] max-w-xl overflow-hidden rounded-[28px] bg-white shadow-2xl"><div className="flex items-start justify-between border-b p-6"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-brand-purple">Anantha Real Estate</p><h2 className="mt-1 text-2xl font-semibold">Tell us what you need</h2><p className="mt-1 text-sm text-slate-500">Your enquiry is registered with the page and property/project you came from.</p></div><button onClick={()=>setOpen(false)} className="grid h-10 w-10 place-items-center rounded-full bg-slate-100"><X size={18}/></button></div>{done?<div className="p-8"><h3 className="text-xl font-semibold">Enquiry registered.</h3><p className="mt-2 text-slate-600">Our team can now identify your interest and where the enquiry originated.</p><button onClick={()=>setOpen(false)} className="mt-6 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white">Done</button></div>:<form onSubmit={submit} className="grid gap-4 p-6"><div className="rounded-xl bg-slate-50 p-4 text-sm"><span className="text-slate-500">Interested in</span><strong className="ml-2 capitalize">{interest||detected.interest}</strong></div><div className="grid gap-4 sm:grid-cols-2"><input required placeholder="Name *" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} className="rounded-xl border p-3"/><input required placeholder="Phone *" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="rounded-xl border p-3"/></div><input type="email" placeholder="Email (optional)" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="rounded-xl border p-3"/><select value={intent} onChange={e=>setIntent(e.target.value)} className="rounded-xl border bg-white p-3"><option>Request Callback</option><option>Get Project Details</option><option>Check Availability</option><option>Schedule Site Visit</option><option>Talk to Property Advisor</option></select><textarea rows={3} placeholder="Anything specific you want us to know?" value={form.message} onChange={e=>setForm({...form,message:e.target.value})} className="rounded-xl border p-3"/><button disabled={busy} className="rounded-xl bg-slate-950 px-5 py-3.5 font-semibold text-white">{busy?"Registering…":"Submit Enquiry"}</button><button type="button" disabled={busy} onClick={()=>void whatsapp()} className="inline-flex items-center justify-center gap-2 rounded-xl border px-5 py-3.5 font-semibold"><MessageCircle size={18}/>Register & Continue on WhatsApp</button><p className="text-center text-xs text-slate-400">WhatsApp also registers the lead first, so the enquiry is not lost.</p></form>}</div></div>}</Ctx.Provider>;
+}
