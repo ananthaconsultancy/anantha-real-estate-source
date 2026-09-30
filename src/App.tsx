@@ -22,6 +22,7 @@ const PropertyPage = lazy(() => import("./pages/PropertyPage"));
 const PropertyIntelligencePage = lazy(() => import("./pages/PropertyIntelligencePage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const PropertyConsultationPage = lazy(() => import("./pages/PropertyConsultationPage"));
+const AgentInventoryIntake = lazy(() => import("./pages/AgentInventoryIntake"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const CentralWorld = lazy(() => import("./pages/centralworld"));
 const CommercialsPage = lazy(() => import("./pages/CommercialsPage"));
@@ -42,30 +43,12 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
+      <TooltipProvider><Toaster /><Sonner />
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <LeadEnquiryProvider>
-            <ScrollToTop />
-            <AnalyticsPageView />
+          <LeadEnquiryProvider><ScrollToTop /><AnalyticsPageView />
             <Suspense fallback={<main className="grid min-h-[50vh] place-items-center text-sm text-slate-500">Loading…</main>}>
               <Routes>
-                <Route path="/" element={<HomePageV2 />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/services" element={<ServicesPage />} />
-                <Route path="/portfolio" element={<PortfolioPage />} />
-                <Route path="/projects" element={<ProjectsPage />} />
-                <Route path="/commercials" element={<CommercialsPage />} />
-                <Route path="/project/:slug" element={<ProjectPage />} />
-                <Route path="/properties" element={<PropertiesPage />} />
-                <Route path="/properties/:category" element={<PropertyCategoryPage />} />
-                <Route path="/property/:slug" element={<PropertyPage />} />
-                <Route path="/property-intelligence" element={<PropertyIntelligencePage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/property-consultation" element={<PropertyConsultationPage />} />
-                <Route path="/centralworld" element={<CentralWorld />} />
-                <Route path="*" element={<NotFound />} />
+                <Route path="/" element={<HomePageV2 />} /><Route path="/about" element={<AboutPage />} /><Route path="/services" element={<ServicesPage />} /><Route path="/portfolio" element={<PortfolioPage />} /><Route path="/projects" element={<ProjectsPage />} /><Route path="/commercials" element={<CommercialsPage />} /><Route path="/project/:slug" element={<ProjectPage />} /><Route path="/properties" element={<PropertiesPage />} /><Route path="/properties/:category" element={<PropertyCategoryPage />} /><Route path="/property/:slug" element={<PropertyPage />} /><Route path="/property-intelligence" element={<PropertyIntelligencePage />} /><Route path="/contact" element={<ContactPage />} /><Route path="/property-consultation" element={<PropertyConsultationPage />} /><Route path="/agent-inventory" element={<AgentInventoryIntake />} /><Route path="/centralworld" element={<CentralWorld />} /><Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
           </LeadEnquiryProvider>
@@ -74,5 +57,4 @@ const App = () => {
     </QueryClientProvider>
   );
 };
-
 export default App;
