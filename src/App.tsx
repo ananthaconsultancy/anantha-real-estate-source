@@ -28,6 +28,7 @@ const CommercialsPage = lazy(() => import("./pages/CommercialsPage"));
 import ScrollToTop from "./components/ScrollToTop";
 import AnalyticsPageView from "./components/AnalyticsPageView";
 import { LeadEnquiryProvider } from "./components/LeadEnquiry";
+import CentralWorldOpeningPopup from "./components/CentralWorldOpeningPopup";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => {
           <LeadEnquiryProvider>
             <ScrollToTop />
             <AnalyticsPageView />
+            <CentralWorldOpeningPopup />
             <Suspense fallback={<main className="grid min-h-[50vh] place-items-center text-sm text-slate-500">Loading…</main>}>
               <Routes>
                 <Route path="/" element={<HomePageV2 />} />
