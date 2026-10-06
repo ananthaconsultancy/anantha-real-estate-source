@@ -16,7 +16,9 @@ export default function CentralWorldOpeningPopup() {
 
   useEffect(() => {
     if (!eligible) return;
-    if (sessionStorage.getItem("cw-opening-popup-dismissed")) return;
+    if (localStorage.getItem("cw-opening-popup-registered")) return;
+    const pageKey = `cw-opening-popup-dismissed:${pathname}`;
+    if (sessionStorage.getItem(pageKey)) return;
     const timer = window.setTimeout(() => setOpen(true), pathname === "/centralworld" ? 700 : 1400);
     return () => window.clearTimeout(timer);
   }, [eligible, pathname]);
@@ -24,7 +26,7 @@ export default function CentralWorldOpeningPopup() {
   if (!eligible || !open) return null;
 
   const close = () => {
-    sessionStorage.setItem("cw-opening-popup-dismissed", "1");
+    sessionStorage.setItem(`cw-opening-popup-dismissed:${pathname}`, "1");
     setOpen(false);
   };
 
@@ -56,6 +58,7 @@ export default function CentralWorldOpeningPopup() {
       });
       if (!response.ok) throw new Error("Could not register your visit.");
       trackEvent("central_world_launch_registration", { source_page: pathname, intent: payload.intent });
+      localStorage.setItem("cw-opening-popup-registered", "1");
       setDone(true);
     } catch (error) {
       alert(error instanceof Error ? error.message : "Could not register your visit. Please try again.");
