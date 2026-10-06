@@ -38,6 +38,10 @@ export default function CentralWorldOpeningPopup() {
     }
     setBusy(true);
     try {
+      const params = new URLSearchParams(window.location.search);
+      const utm_source = params.get("utm_source") || "";
+      const utm_medium = params.get("utm_medium") || "";
+      const utm_campaign = params.get("utm_campaign") || "";
       const payload = {
         name: name.trim(),
         phone: phone.trim(),
@@ -46,8 +50,15 @@ export default function CentralWorldOpeningPopup() {
         lead_type: "Project Enquiry",
         interest: "Central World III Grand Opening — 11 Oct 2026",
         intent: "Free Launch Event Site Visit",
-        source: "Website",
+        source: utm_source || "Website",
         source_page: pathname,
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        campaign: utm_campaign || "central_world",
+        campaign_segment: "Central World Launch Event",
+        campaign_status: "New Registration",
+        attendance: "Not Confirmed",
         page_url: window.location.href,
         timestamp: new Date().toISOString(),
       };
@@ -57,7 +68,7 @@ export default function CentralWorldOpeningPopup() {
         body: JSON.stringify({ data: [payload] }),
       });
       if (!response.ok) throw new Error("Could not register your visit.");
-      trackEvent("central_world_launch_registration", { source_page: pathname, intent: payload.intent });
+      trackEvent("central_world_launch_registration", { source_page: pathname, intent: payload.intent, source: payload.source, utm_campaign: payload.utm_campaign, campaign: payload.campaign });
       localStorage.setItem("cw-opening-popup-registered", "1");
       setDone(true);
     } catch (error) {
