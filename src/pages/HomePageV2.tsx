@@ -125,7 +125,7 @@ const HomePageV2 = () => {
           {[current].map((slide) => (
             <div
               key={slide.title}
-              className={`absolute inset-0 transition-opacity duration-1000 ${index === activeSlide ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+              className="absolute inset-0"
             >
               <img src={slide.image.replace(/w=1600/, "w=960")} srcSet={`${slide.image.replace(/w=1600/, "w=640")} 640w, ${slide.image.replace(/w=1600/, "w=960")} 960w, ${slide.image} 1600w`} sizes="100vw" alt={slide.alt} loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-r from-white via-white/88 to-white/10" />
