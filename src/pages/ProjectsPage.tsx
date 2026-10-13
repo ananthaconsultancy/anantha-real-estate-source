@@ -8,7 +8,7 @@ import { projects } from "@/data/projects";
 import { stockImages } from "@/data/stockImages";
 
 const categories = ["All Projects", "Plots", "Townships", "Commercial"] as const;
-const imageFor = (slug: string) => slug === "motherland-green-meadows" ? "/projects/motherland/green-meadows/aerial-01.jpg" : slug === "central-world-nellore" ? "/projects/green-home/central%20world/central%20world%20entrance.jpeg" : stockImages.land;
+const imageFor = (slug: string) => slug === "motherland-green-meadows" ? "/projects/motherland/green-meadows/aerial-01.jpg" : slug === "central-world-nellore" ? "/projects/green-home/central%20world/central%20world%20entrance.jpeg" : slug === "motherland-crkr-sunrise-city" ? "/projects/motherland/sunrise-city/hero.jpg" : stockImages.land;
 
 const ProjectsPage = () => {
   const [category, setCategory] = useState<typeof categories[number]>("All Projects");
