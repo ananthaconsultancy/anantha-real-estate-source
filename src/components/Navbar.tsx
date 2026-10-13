@@ -43,7 +43,7 @@ const Navbar = () => {
           <img src={logo} alt="Anantha Real Estate Consultancy" className="h-12 md:h-14 w-auto object-contain" />
         </Link>
 
-        <nav className="hidden xl:flex items-center gap-6 ml-auto">
+        <nav aria-label="Primary navigation" className="hidden xl:flex items-center gap-6 ml-auto">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -72,6 +72,8 @@ const Navbar = () => {
         <button
           className="xl:hidden ml-auto p-2 rounded-xl text-slate-900"
           onClick={() => setIsMobileMenuOpen((open) => !open)}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-site-navigation"
           aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -79,8 +81,8 @@ const Navbar = () => {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="xl:hidden bg-white border-t border-slate-100 shadow-xl">
-          <nav className="container mx-auto px-4 py-4 flex flex-col">
+        <div id="mobile-site-navigation" className="xl:hidden bg-white border-t border-slate-100 shadow-xl">
+          <nav aria-label="Mobile navigation" className="container mx-auto px-4 py-4 flex flex-col">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
