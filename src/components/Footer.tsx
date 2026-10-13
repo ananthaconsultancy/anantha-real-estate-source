@@ -63,7 +63,7 @@ const Footer = () => {
       <div className="border-t border-border">
         <div className="container mx-auto px-4 py-5 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} Anantha Real Estate. All rights reserved.</p>
-          <nav aria-label="Legal information" className="flex flex-wrap gap-x-4 gap-y-2">{[["Privacy","/privacy-policy"],["Terms","/terms-of-service"],["Refunds","/refund-policy"],["Cookies","/cookie-policy"],["Data deletion","/data-deletion"]].map(([label,href])=><Link key={href} to={href} className="underline hover:text-brand-purple">{label}</Link>)}</nav>
+          <nav aria-label="Legal information" className="flex flex-wrap gap-x-4 gap-y-2">{[["Privacy","/privacy-policy"],["Terms","/terms-of-service"],["Refunds","/refund-policy"],["Data deletion","/data-deletion"]].map(([label,href])=><Link key={href} to={href} className="underline hover:text-brand-purple">{label}</Link>)}</nav>
         </div>
       </div>
     </footer>
