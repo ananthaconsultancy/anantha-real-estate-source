@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import { initializeGoogleTags } from "./lib/googleTags";
 import "./index.css";
 
-if (!window.location.pathname.startsWith("/admin")) initializeGoogleTags();
+if (!window.location.pathname.startsWith("/admin") && localStorage.getItem("anantha_optional_cookies") === "accepted") initializeGoogleTags();
 
 createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
