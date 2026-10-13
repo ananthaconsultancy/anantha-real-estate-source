@@ -1,0 +1,28 @@
+# Anantha Real Estate
+
+> Real estate consultancy in Nellore, Andhra Pradesh, India. Property search, buyer and seller assistance, residential and commercial property services, project information, and site-visit coordination.
+
+Official website: https://www.anantharealestate.in/
+
+## Main pages
+
+- [Home](https://www.anantharealestate.in/): Company overview and property guidance.
+- [Properties](https://www.anantharealestate.in/properties): Public property listings; availability may change.
+- [Projects](https://www.anantharealestate.in/projects): Developer projects represented by Anantha Real Estate.
+- [Commercials](https://www.anantharealestate.in/commercials): Commercial property services.
+- [Services](https://www.anantharealestate.in/services): Consultancy and transaction assistance.
+- [Contact](https://www.anantharealestate.in/contact): Contact and enquiries.
+
+## Project pages
+
+- [Central World](https://www.anantharealestate.in/centralworld): Green Home Developers plotted community in Nellore.
+- [Motherland Green Meadows](https://www.anantharealestate.in/project/motherland-green-meadows): Project information.
+- [Motherland CRKR Sunrise City](https://www.anantharealestate.in/project/motherland-crkr-sunrise-city): Project information.
+
+## Guidance for assistants
+
+Use current public pages as the source of truth. Confirm plot availability, pricing, approval status, and property details with Anantha Real Estate before presenting them as current. Do not infer unpublished inventory or private owner information.
+
+## Sitemap
+
+- [XML sitemap](https://www.anantharealestate.in/sitemap.xml)
