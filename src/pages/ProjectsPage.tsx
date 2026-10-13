@@ -6,9 +6,10 @@ import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { projects } from "@/data/projects";
 import { stockImages } from "@/data/stockImages";
+import centralWorldHero from "@/assets/central-world/central-world-hero-v2-web.jpg";
 
 const categories = ["All Projects", "Plots", "Townships", "Commercial"] as const;
-const imageFor = (slug: string) => slug === "motherland-green-meadows" ? "/projects/motherland/green-meadows/aerial-01.jpg" : slug === "central-world-nellore" ? stockImages.villaPool : stockImages.land;
+const imageFor = (slug: string) => slug === "motherland-green-meadows" ? "/projects/motherland/green-meadows/aerial-01.jpg" : slug === "central-world-nellore" ? centralWorldHero : stockImages.land;
 
 const ProjectsPage = () => {
   const [category, setCategory] = useState<typeof categories[number]>("All Projects");
