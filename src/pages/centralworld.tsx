@@ -37,7 +37,7 @@ export default function CentralWorld(){
   const {openLead}=useLeadEnquiry();
   const enquire=(intent:string)=>openLead("Central World Nellore",intent);
   const structuredData=[
-    {"@type":"Product","name":"Central World Nellore Plots","description":"Premium plotted township at Kanaparthi Padu, Nellore by Green Home Developers.","brand":{"@type":"Brand","name":"Green Home Developers"},"category":"Residential plots in Nellore","url":"https://www.anantharealestate.in/centralworld"},
+    {"@type":"Place","name":"Central World Nellore Plots","description":"Premium plotted township at Kanaparthi Padu, Nellore by Green Home Developers.","address":{"@type":"PostalAddress","addressLocality":"Nellore","addressRegion":"Andhra Pradesh","addressCountry":"IN"},"url":"https://www.anantharealestate.in/centralworld"},
     {"@type":"Event","name":"Central World III Grand Opening","startDate":"2026-10-11T10:30:00+05:30","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Central World","address":{"@type":"PostalAddress","addressLocality":"Kanaparthi Padu, Nellore","addressRegion":"Andhra Pradesh","addressCountry":"IN"}},"organizer":{"@type":"Organization","name":"Green Home Developers"},"description":"Central World III grand opening and project site visit on 11 October 2026. Anantha Real Estate is coordinating visitor registrations."},
     {"@type":"FAQPage","mainEntity":faqs.map(([q,a])=>({"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}}))}
   ];
