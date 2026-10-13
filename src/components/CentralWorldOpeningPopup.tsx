@@ -19,7 +19,7 @@ export default function CentralWorldOpeningPopup() {
     if (localStorage.getItem("cw-opening-popup-registered")) return;
     const pageKey = `cw-opening-popup-dismissed:${pathname}`;
     if (sessionStorage.getItem(pageKey)) return;
-    const timer = window.setTimeout(() => setOpen(true), pathname === "/centralworld" ? 700 : 1400);
+    const timer = window.setTimeout(() => setOpen(true), pathname === "/centralworld" ? 2500 : 6000);
     return () => window.clearTimeout(timer);
   }, [eligible, pathname]);
 
