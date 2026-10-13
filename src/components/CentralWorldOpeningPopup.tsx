@@ -80,7 +80,7 @@ export default function CentralWorldOpeningPopup() {
 
   return (
     <div className="fixed inset-0 z-[190] grid place-items-center overflow-y-auto bg-slate-950/75 p-2 backdrop-blur-sm sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && close()}>
-      <div className="relative my-auto w-full max-w-[1100px] overflow-hidden rounded-[24px] bg-white shadow-2xl">
+      <div role="dialog" aria-modal="true" aria-label="Central World site visit invitation" className="relative my-auto w-full max-w-[1100px] overflow-hidden rounded-[24px] bg-white shadow-2xl">
         <button aria-label="Close launch invitation" onClick={close} className="absolute right-3 top-3 z-30 grid h-10 w-10 place-items-center rounded-full bg-white/95 text-slate-900 shadow-lg"><X size={19} /></button>
 
         <div className="relative aspect-[3/2] w-full overflow-hidden bg-slate-100">
