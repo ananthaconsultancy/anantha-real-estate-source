@@ -122,12 +122,12 @@ const HomePageV2 = () => {
 
       <main className="pt-[76px]">
         <section className="relative min-h-[620px] overflow-hidden border-b border-slate-200 bg-white md:min-h-[680px]">
-          {slides.map((slide, index) => (
+          {[current].map((slide) => (
             <div
               key={slide.title}
               className={`absolute inset-0 transition-opacity duration-1000 ${index === activeSlide ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             >
-              <img src={slide.image} alt={slide.alt} className="h-full w-full object-cover" />
+              <img src={slide.image} alt={slide.alt} loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-r from-white via-white/88 to-white/10" />
             </div>
           ))}
@@ -188,7 +188,7 @@ const HomePageV2 = () => {
                 const image = isProperty ? (item.image || propertyFallbackImage(item.type)) : propertyFallbackImage(item.slug);
                 const title = isProperty ? item.name : item.name;
                 const subtitle = isProperty ? item.location : item.description;
-                return <Link key={item.slug} to={href} className="group overflow-hidden rounded-2xl bg-white border border-[#e4e8f4] shadow-[0_8px_25px_rgba(25,36,83,0.06)]"><div className="aspect-[4/3] overflow-hidden bg-slate-100"><img src={image} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /></div><div className="p-4"><h3 className="font-extrabold text-[#171c42]">{title}</h3><p className="mt-2 flex items-start gap-1 text-xs leading-5 text-slate-500">{isProperty && <MapPin size={13} className="mt-0.5 shrink-0" />}{subtitle}</p>{isProperty && <p className="mt-3 text-sm font-black text-[#3d24a1]">{item.priceLabel || "Price on request"}</p>}</div></Link>;
+                return <Link key={item.slug} to={href} className="group overflow-hidden rounded-2xl bg-white border border-[#e4e8f4] shadow-[0_8px_25px_rgba(25,36,83,0.06)]"><div className="aspect-[4/3] overflow-hidden bg-slate-100"><img src={image} alt={title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /></div><div className="p-4"><h3 className="font-extrabold text-[#171c42]">{title}</h3><p className="mt-2 flex items-start gap-1 text-xs leading-5 text-slate-500">{isProperty && <MapPin size={13} className="mt-0.5 shrink-0" />}{subtitle}</p>{isProperty && <p className="mt-3 text-sm font-black text-[#3d24a1]">{item.priceLabel || "Price on request"}</p>}</div></Link>;
               })}
             </div>
           </div>
