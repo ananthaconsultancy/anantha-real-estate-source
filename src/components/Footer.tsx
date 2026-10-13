@@ -38,7 +38,7 @@ const Footer = () => {
 
           <div>
             <p className="font-semibold mb-5">Quick Links</p>
-            <nav className="grid gap-3 text-sm">
+            <nav aria-label="Footer quick links" className="grid gap-3 text-sm">
               {links.map((link) => <Link key={link.name} to={link.href} className="text-muted-foreground hover:text-brand-purple transition-colors">{link.name}</Link>)}
             </nav>
           </div>
