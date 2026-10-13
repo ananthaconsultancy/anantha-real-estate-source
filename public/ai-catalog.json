@@ -1,0 +1,32 @@
+{
+  "name": "Anantha Real Estate",
+  "description": "Real estate consultancy in Nellore, Andhra Pradesh, India.",
+  "url": "https://www.anantharealestate.in/",
+  "language": [
+    "en",
+    "te"
+  ],
+  "category": "Real Estate",
+  "resources": [
+    {
+      "name": "Properties",
+      "url": "https://www.anantharealestate.in/properties",
+      "description": "Public property listings"
+    },
+    {
+      "name": "Projects",
+      "url": "https://www.anantharealestate.in/projects",
+      "description": "Developer project directory"
+    },
+    {
+      "name": "Commercials",
+      "url": "https://www.anantharealestate.in/commercials",
+      "description": "Commercial property services"
+    },
+    {
+      "name": "Contact",
+      "url": "https://www.anantharealestate.in/contact",
+      "description": "Property enquiries and consultations"
+    }
+  ]
+}
