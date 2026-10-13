@@ -26,7 +26,6 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const CentralWorld = lazy(() => import("./pages/centralworld"));
 const CommercialsPage = lazy(() => import("./pages/CommercialsPage"));
 import ScrollToTop from "./components/ScrollToTop";
-import CookieConsent from "./components/CookieConsent";
 const LegalPage = lazy(() => import("./pages/LegalPage"));
 import AnalyticsPageView from "./components/AnalyticsPageView";
 import { LeadEnquiryProvider } from "./components/LeadEnquiry";
@@ -52,7 +51,6 @@ const App = () => {
           <LeadEnquiryProvider>
             <ScrollToTop />
             <AnalyticsPageView />
-            <CookieConsent />
             <CentralWorldOpeningPopup />
             <Suspense fallback={<main className="grid min-h-[50vh] place-items-center text-sm text-slate-500">Loading…</main>}>
               <Routes>
