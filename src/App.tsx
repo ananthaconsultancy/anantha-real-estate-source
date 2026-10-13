@@ -26,6 +26,8 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const CentralWorld = lazy(() => import("./pages/centralworld"));
 const CommercialsPage = lazy(() => import("./pages/CommercialsPage"));
 import ScrollToTop from "./components/ScrollToTop";
+import CookieConsent from "./components/CookieConsent";
+const LegalPage = lazy(() => import("./pages/LegalPage"));
 import AnalyticsPageView from "./components/AnalyticsPageView";
 import { LeadEnquiryProvider } from "./components/LeadEnquiry";
 import CentralWorldOpeningPopup from "./components/CentralWorldOpeningPopup";
@@ -50,6 +52,7 @@ const App = () => {
           <LeadEnquiryProvider>
             <ScrollToTop />
             <AnalyticsPageView />
+            <CookieConsent />
             <CentralWorldOpeningPopup />
             <Suspense fallback={<main className="grid min-h-[50vh] place-items-center text-sm text-slate-500">Loading…</main>}>
               <Routes>
@@ -67,6 +70,7 @@ const App = () => {
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/property-consultation" element={<PropertyConsultationPage />} />
                 <Route path="/centralworld" element={<CentralWorld />} />
+                <Route path="/:slug" element={<LegalPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
