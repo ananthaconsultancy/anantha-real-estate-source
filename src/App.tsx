@@ -22,6 +22,7 @@ const PropertyPage = lazy(() => import("./pages/PropertyPage"));
 const PropertyIntelligencePage = lazy(() => import("./pages/PropertyIntelligencePage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const PropertyConsultationPage = lazy(() => import("./pages/PropertyConsultationPage"));
+const RequirementsPage = lazy(() => import("./pages/RequirementsPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const CentralWorld = lazy(() => import("./pages/centralworld"));
 const CommercialsPage = lazy(() => import("./pages/CommercialsPage"));
@@ -67,6 +68,7 @@ const App = () => {
                 <Route path="/property-intelligence" element={<PropertyIntelligencePage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/property-consultation" element={<PropertyConsultationPage />} />
+                <Route path="/requirements" element={<RequirementsPage />} />
                 <Route path="/centralworld" element={<CentralWorld />} />
                 <Route path="/:slug" element={<LegalPage />} />
                 <Route path="*" element={<NotFound />} />
