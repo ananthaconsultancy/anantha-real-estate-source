@@ -12,6 +12,7 @@ const Footer = () => {
     { name: "Property Intelligence", href: "/property-intelligence" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
+    { name: "Submit Requirement", href: "/requirements" },
   ];
 
   const socialLinks = [
