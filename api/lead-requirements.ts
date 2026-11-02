@@ -1,4 +1,5 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+type VercelRequest = { method?: string; headers: Record<string, string | string[] | undefined>; body?: any };
+type VercelResponse = { setHeader: (key: string, value: string) => void; status: (code: number) => VercelResponse; json: (data: unknown) => void };
 import { SignJWT, importPKCS8 } from "jose";
 
 const allowedIntent = ["Buy", "Rent", "Sell", "Lease out", "Investment", "Commercial requirement"];
